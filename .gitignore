@@ -11,5 +11,5 @@ chromadb/
 *.sqlite3
 *.bin
 *.pickle
-*.pkl
+
 .DS_Store
