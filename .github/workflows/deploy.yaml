@@ -20,8 +20,27 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # add hf as a remote repo
-          git remote add hf https://Emmanuel-Adeyemo:$HF_TOKEN@huggingface.co/spaces/eadey/QGen-AI
+         
+          git remote rm hf || true
           
-          # force push
+          
+          cd ..
+          rm -rf hf_deploy
+          mkdir hf_deploy
+          
+         
+          rsync -av --exclude='.git' QGen-AI/ hf_deploy/
+          
+          
+          cd hf_deploy
+          git init -b main
+          git config user.name "GitHub Action"
+          git config user.email "actions@github.com"
+          
+          
+          git add .
+          git commit -m "deploy: production release asset compilation"
+          
+          
+          git remote add hf https://eadey:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/eadey/QGen-AI
           git push hf main --force
