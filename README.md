@@ -22,7 +22,7 @@ While ChatGPT will excel at high level summaries (e.g. "What is the difference b
 recurrent selection?") it will fail and hallucinate on on highly niche, algorithmic, or multi-step execution 
 workflows found in quantitative genetics literature and software manuals (e.g. "How does the PopVar package 
 calculate predicted genetic variance ($V_G$) of a cross, and what specific steps are handled by R/qtl versus 
-rrBLUP?".
+rrBLUP?").
 
 QGen-AI systematically solves this by using a hybrid search engine to find the exact text researchers need, 
 then forcing the AI to answer using only those proven facts—completely eliminating guessing or making things up.
@@ -30,13 +30,13 @@ then forcing the AI to answer using only those proven facts—completely elimina
 ## Live Deployment
 The application is fully containerized and deployed publicly:
 * **Interactive Dashboard:** https://huggingface.co/spaces/eadey/QGen-AI
-* **Backend Architecture:** Streamlit + Docker + ChromaDB + BM25 Hybrid Retrieval
+* **Backend Architecture:** Streamlit + Docker + Pinecone + ChromaDB + BM25 Hybrid Retrieval
 
 ---
 ## System Architecture
 
 QGen-AI leverages a hybrid keyword-dense and semantic vector space retrieval workflow to optimize context 
-windows prior to response (llm)) generation:
+windows prior to response (LLM) generation:
 
 ![RAG Evaluation Metrics](https://raw.githubusercontent.com/Emmanuel-Adeyemo/QGen-AI/repo-assets/output/plots/gemini_generated_workflow.png)
 
@@ -62,15 +62,15 @@ plant breeding test cases.
 
 
 ### Evaluation Metrics Breakdown:
-* **Contextual Recall (1.0000 / 100% Pass):** Our hybrid search architecture successfully captured 
+* **Contextual Recall (0.98 / 100% Pass):** Our hybrid search architecture successfully captured 
 100% of the required background text, proving it works equally well tracking exact terminology and 
 broad scientific concepts.
-* **Answer Relevancy (0.9600 / 100% Pass):** Our strict prompt rules kept the assistant focused on the
+* **Answer Relevancy (0.96 / 100% Pass):** Our strict prompt rules kept the assistant focused on the
 target question, completely eliminating conversational filler or rambling answers.
-* **Contextual Precision (0.9300 / 88.89% Pass):** Our tuned text-splitting strategy ensured that the 
+* **Contextual Precision (0.93 / 88.89% Pass):** Our tuned text-splitting strategy ensured that the 
 documents fed into the AI were highly dense and packed with relevant technical details, keeping 
 unnecessary noise out of the context window.
-* **Faithfulness (0.8100 / 88.89% Pass):** Our strict rule against guessing effectively prevented 
+* **Faithfulness (0.81 / 88.89% Pass):** Our strict rule against guessing effectively prevented 
 hallucinations. Every output metric maps directly to an exact document anchor.
 
 > **Understanding Evaluation Metrics (Style vs Accuracy):** We noticed that our automated AI judge occasionally gave lower scores
@@ -84,8 +84,9 @@ hallucinations. Every output metric maps directly to an exact document anchor.
 
 ### Repository Structure
 ```text
+├── .streamlit/             # Streamlit UI PDF upload limit bypass
 ├── .github/workflows/      # CI/CD pipelines
-├── src/                    # utility scripts
+├── src/                    # Utility setup scripts
 ├── output/
 │   ├── metrics/            # Log outputs of DeepEval validation runs
 │   └── plots/              # Matplotlib analytical charts for README
@@ -104,6 +105,7 @@ cd QGen-AI
 2. Export your environment variables:
 ```bash
 export OPENAI_API_KEY="your-api-key-here" 
+export PINECONE_API_KEY="your-api-key-here"
 ```
 
 3. Run using Docker:
@@ -116,7 +118,7 @@ docker run -p 7860:7860 --env OPENAI_API_KEY=$OPENAI_API_KEY qgen-ai
 ## Core Technologies Used
 - Backend Pipeline: Python, LangChain, OpenAI API
 
-- Vector Indexing & Retrieval: ChromaDB, Rank-BM25, NumPy
+- Vector Indexing & Retrieval: Pinecone, ChromaDB, Rank-BM25, NumPy
 
 - Interface & Cloud Infrastructure: Streamlit, Docker, Hugging Face Spaces
 
