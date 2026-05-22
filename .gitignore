@@ -2,6 +2,7 @@ venv/
 notebooks/
 subset/
 data/
+output/plots/
 .idea/
 .env
 __pycache__/
