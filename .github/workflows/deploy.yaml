@@ -3,7 +3,6 @@ name: Sync to Hugging Face Space
 on:
   push:
     branches: [main]
-
   workflow_dispatch:
 
 jobs:
@@ -20,19 +19,26 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-         
-          git remote rm hf || true
           
+          git remote rm hf || true
           
           cd ..
           rm -rf hf_deploy
           mkdir hf_deploy
           
-         
           rsync -av --exclude='.git' QGen-AI/ hf_deploy/
           
-          
           cd hf_deploy
+          if [ -f ".hf-readme-metadata.yml" ] && [ -f "README.md" ]; then
+            echo "Stitching Hugging Face frontmatter metadata with project README..."
+            cat .hf-readme-metadata.yml README.md > TEMP_README.md
+            mv TEMP_README.md README.md
+            rm .hf-readme-metadata.yml
+          else
+            echo "Warning: Extraction targets missing. Defaulting to raw README asset structure."
+          fi
+          
+          
           git init -b main
           git config user.name "GitHub Action"
           git config user.email "actions@github.com"
@@ -40,7 +46,5 @@ jobs:
           
           git add .
           git commit -m "deploy: production release asset compilation"
-          
-          
           git remote add hf https://eadey:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/eadey/QGen-AI
           git push hf main --force
