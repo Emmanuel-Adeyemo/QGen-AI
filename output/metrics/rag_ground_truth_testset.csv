@@ -1,0 +1,1154 @@
+user_input,reference,context
+"Compare GS with MABC/MARS for complex traits, marker use, phenotypic-data needs, and efficiency.","Compared with MABC/MARS, genomic selection (GS) is better suited for complex traits like yield and drought tolerance because these traits are controlled by many genes/QTLs with small effects. MABC and MARS rely on identifying markers linked to a few QTLs and are more effective for simple traits, but they involve a lengthy process of developing mapping populations.
+
+GS differs by using genome-wide marker data from a training population that is both phenotyped and genotyped to build prediction models. It does not require prior identification of specific QTL-linked markers. Once trained, the model can predict genomic estimated breeding values (GEBVs) for candidate individuals, allowing selection even without phenotypic data.
+
+In terms of efficiency, GS is faster and more effective for complex trait improvement because reduced genotyping costs and high-throughput genotyping enable genome-wide selection, shorten breeding cycles, and improve use of total additive genetic variance.","Nations’ estimates, more than 790 million people globally do not have access to
+sufﬁcient nutritious food ( https://sustainabledevelopment.un.org/sdg2), posing a
+threat to achieving the Sustainable Development Goal (SDG) target of zero hunger
+(universal access to safe, nutritious, and sufﬁcient food at all times of the year).
+In the event of these challenges, there is a need to look for new ways of breeding
+for food crops and other plant species by using modern technologies. Modern
+breeding approaches that have the capability to reduce breeding cycle time provide
+more precision in selection, and more efﬁcient use of genetic variation can be
+exploited to increase the rate of genetic gains in breeding programs. The rapid
+decline in the cost of sequencing and genotyping has led to the development of new
+tools and strategies that can transform the way we breed plant species. In the past,
+the cost of genotyping restricted the regular use of markers in breeding. In most
+cases a limited number of markers for the target regions were used for selecting the
+lines based on presence or absence of agriculturally important alleles. Development
+of crop varieties using conventional breeding approaches has been effective but
+time-consuming and labor-intensive. Recent advances in the next-generation
+sequencing (NGS) technologies have been able to reduce the cost of genotyping
+and sequencing. This has enabled the use of the high-throughput and cost-effective
+high-density genotyping. These low-cost genotyping platforms have accelerated the
+use of markers in the breeding programs using genome-wide approaches (Varshney
+et al. 2014).
+Integrating genomic tools with conventional breeding can have a major impact
+for dealing with current and future environmental challenges more efﬁciently. In
+such conditions, germplasm, genetic, and genomic resources are mandatory in all
+plant species for rapid genetic gains in productivity of these species using decision
+support tools. First-generation molecular breeding approaches (marker-assisted
+backcrossing, marker-assisted recurrent selection) followed a lengthy process for
+developing mapping populations for identiﬁcation of markers linked to quantitative
+trait loci (QTL) for a few simple traits. The majority of economically important
+traits such as drought tolerance and yield are polygenic in nature and controlled by
+multiple genes with small effects. In order to improve complex traits, such as
+drought tolerance and yield, the modern breeding approach, genomic selection
+(GS) (Meuwissen et al. 2001), can be deployed which speciﬁcally aims at improv-
+ing quantitative traits by using genome-wide marker data without requiring iden-
+tiﬁcation of markers associated with QTL for traits of interest. GS uses a “training
+population” of individuals that have been both phenotyped and genotyped to train a
+prediction model for calculating genomic estimated breeding values (GEBVs).
+Subsequently by using this model, GEBVs can be calculated for untested individ-
+uals from a “candidate population”, and selection candidates (SCs) for making
+crosses or for advanced yield trials can be identiﬁed. Although GEBVs do not
+identify the function of the underlying QTLs/genes for the trait, they are an
+excellent selection criterion (Jannink et al. 2010). GS attempts to capture the total
+additive genetic variance with genome-wide marker coverage and effect estimates
+(Rutkoski et al. 2011). Therefore, selection of an individual without phenotypic
+data can be performed based on the individual ’s predicted breeding value.
+2 R.K. Varshney et al.
+
+Preface
+The past decade has seen a tremendous shift toward using next-generation sequenc-
+ing (NGS) technologies for development of powerful tools to identify underlying
+genes for both simple and complex traits. The advent of NGS and high-throughput
+genotyping technologies have reduced the genotyping cost signiﬁcantly and made it
+possible to use genome-wide marker data for prediction of phenotype to help reduce
+the cost of phenotyping. Integration of genomics tools with conventional breeding
+can forge new directions to meet environmental challenges efﬁciently in less time
+and more accurately. First-generation molecular breeding approaches (marker-
+assisted backcrossing (MABC) and marker-assisted recurrent selection (MARS))
+require a lengthy process for developing genetic populations for identiﬁcation of
+linked markers for a few simply inherited traits but failed to improve complex traits
+such as yield and drought tolerance due to their technical and genetic limitations. In
+the case of complex traits which are generally controlled by large number of genes/
+quantitative trait loci (QTLs) with small effect, “genomic selection (GS)” has
+gained momentum in plant breeding due to the decline in the genotyping cost.
+One of the strengths of GS lies in the ability to select an individual without
+phenotypic data (predicting the individual ’s breeding value) based on a prediction
+model trained with phenotypes and genotypes. However, practicing GS is not as
+simple as MABC and MARS and requires an understanding of complex statistical
+models. GS has been widely used in cattle breeding and more recently has gained
+popularity among plant breeders. This book is a timely effort to compile details
+about GS for users providing basic as well as advanced understanding. The content
+of this book will serve as a useful reference for users, covering the germplasm to be
+used, phenotyping evaluation, marker genotyping methods, and statistical models
+involved in genomic selection.
+A total of 21 authors (Contributors) have contributed to the nine chapters of the
+book. The editors of this volume are grateful to all the authors for their contribu-
+tions and for their commendable effort in summarizing the published/unpublished
+research work in a comprehensive, up-to-date manner. In addition, the cooperation
+they have extended in terms of timely completion and revision of chapters from
+vii
+
+reduced by genotyping young seedlings and predicting their phenotype instead of
+waiting for long a breeding cycle of 4–20 years or more. The authors have compiled
+and presented all GS experimental studies in forest trees along with their key
+attributes and performance of predictive abilities for different traits in the chapter.
+1.5 Summary
+As can be seen from the introduction of eight different chapters, GS, a modern
+breeding approach, is gaining popularity and becoming the choice for many
+breeders for improving complex traits. The book provides up-to-date information
+about models, methodologies, factors affecting prediction accuracy, and some
+examples of deployment of GS for crop improvement. This book will serve as
+reference for users that provides basic as well as advanced understanding about
+GS. The book is expected to serve as a useful review for users that explains the
+germplasm to be used, phenotyping, marker genotyping methods, and statistical
+models involved in GS. It also includes some examples of ongoing activities of
+genomic selection in cereal, legume, clonal crop, and tree species.
+References
+Jannink JL, Lorenz AJ, Iwata H (2010) Genomic selection in plant breeding: from theory to
+practice. Brief Funct Genomics 9:166–177
+Meuwissen TH, Hayes BJ, Goddard ME (2001) Prediction of total genetic value using genome-
+wide dense marker maps. Genetics 157:1819–1829
+Rutkoski JE, Heffner EL, Sorrells ME (2011) Genomic selection for durable stem rust resistance in
+wheat. Euphytica 179:161–173
+Varshney RK, Terauchi R, McCouch SR (2014) Harvesting the promising fruits of genomics:
+applying genome sequencing technologies to crop breeding. PLoS Biol 12(6):e1001883
+6 R.K. Varshney et al."
+Why can pyramiding multiple cereal resistance genes outlast single-gene resistance and widen pathogen-strain coverage?,"Pyramiding can be more durable because a pathogen is much less likely to simultaneously mutate to overcome two or more resistance genes than just one. In contrast, single major resistance genes are often overcome relatively quickly, especially under large-scale, long-term cultivation, because pathogens have high mutation rates and new virulent strains are selected.
+
+It also broadens pathogen-strain coverage because different resistance genes often recognize different pathogen strains. Combining them in one cultivar therefore produces a wider resistance spectrum, often giving broader and stronger protection than any single gene alone.","Strategies of Breeding for Durable Disease Resistance in Cereals 139
+bilities in resistance breeding in the future . Furthermore, pathogen resis­
+tance in cereals may be enhanced by the use of induced resistance (IR)
+that has proven its efficiency already in dicots. The present review will
+bring different aspects of breeding for durable resistance into focus, i.e.,
+an efficient use of monogenic resistances by pyramiding, the manipula­
+tion of quantitative disease resistance by QTL analyses, the application
+of induced resistance, and strategies for enhancing resistance by genetic
+engineering, respectively.
+2 Resistance Gene Accumulation - Gene Pyramiding
+Breeding for resistance based on monogenic resistance is a two-step
+approach consisting of the identification of a resistance donor within the
+gene pool followed by the transfer of corresponding genes into basic
+materials, breeding lines and novel cultivars (Graner et al. 2000).
+Therefore, on the one hand extensive screening programs are required
+as reported, e.g., for the barley yellow mosaic virus disease complex
+(Proeseler et al. 1989; Ordon et al. 1993). On the other, systems and
+strategies ensuring reliable resistance gene detection and selection pro­
+cedures are needed. Besides phenotypic selection the availability of
+closely linked genetic markers like restriction fragment length polymer­
+phisms (RFLPs), random amplified polymorphic DNAs (RAPDs), am­
+plified fragment length polymorphisms (AFLPs) and microsatellites
+(simple sequence repeats, SSRs) permit fast and reliable detection of
+respective resistance genes enabling marker assisted selection (MAS)
+procedures (Mohan et al. 1997). Meanwhile, numerous resistance genes
+and resistance loci, respectively , have been localized and mapped using
+molecular markers for various crops and pathosystems (Ordon et al.
+1998). For example, Graner et al. (2000) have provided a summary of
+barley genes that confer resistance against different fungal and viral
+pathogens (and which have been tagged by molecular markers).
+With regard to the potential risk of a resistance breakdown , the du­
+rability of disease resistance is of special importance concerning the
+economy of plant breeding. Disease resistance durability, which is de­
+fined as the adequacy of the resistance throughout the useful lifetime
+expected for a variety (Leach et al. 2001), has to be evaluated concerning
+its effectiveness in a cultivar under conditions of widespread cultivation
+in an environment favoring the respective disease (Wang et al. 1994).
+Monogenic (qualitative) resistance (Flor 1971), i.e., resistance conferred
+by a single major gene (Leach et al. 2001), is assumed to be non-durable
+in most cases, with exceptions like mlo resistance, due to the generally
+high mutation rate of plant pathogens (Kiyosawa 1982; Kloppers and
+Pretorius 1997; Takken and Ioosten 2000), thus leading to the selection
+of new strains of the pathogen that are able to overcome the effects of
+
+Genetics
+Strategies of Breeding for Durable Disease Resistance
+in Cereals
+Wolfgang Friedt, Kay Werner, Bettina Pellio, Claudia Weiskorn,
+Marco Kramer, and Frank Ordon
+1 Introduction
+Grain crops, like rice (Oryza sativa), maize (Zea mays), wheat (Triticum
+aestivum), barley (Hordeum vulgare), and - to a lesser extent - sorghum
+(Sorghum bicolor), oats (Avena sativa), and rye (Secale cereale) are of
+major importance for animal feeding and human nutrition (cf. FAO
+2001). The grain yield and yield stability of these and other crops like
+potato and soybean are essential for ensuring human nutrition on a
+worldwide basis. However, in summary , yield losses of these crops due
+to biotic stresses are impressive. For example, Oerke et al. (1994) esti­
+mated that about 70% of the whole potential production would be lost if
+pests went uncontrolled and the Natural Resources Institute (1992) es­
+timated a loss of 30-40% corresponding to about US$ 300 billion/year
+(cf. Nelson 2001). The most cost-effective and environmentally friendly
+approach of avoiding such yield losses is the exploitation and use of
+genetic diversity of crop plants regarding reaction to major pathogens,
+i.e., breeding for pest and disease resistance . With respect to the mode of
+inheritance, race-specific ""qualitative"" types of resistance (monogenic
+resistances) have to be distinguished from non -race-specific, quantita­
+tive resistance (oligo- or polygenic resistances) . Introgression of these
+resistances from unadapted germplasms , related or even more distant
+species, respectively, is achieved by sexual recombination, i.e., crossing
+of parental lines followed by phenotypic selection in the segregating
+offspring . In this case the success of breeding depends entirely on ex­
+tensive field or glasshouse tests for resistance to the respective patho­
+gen(s). However, with respect to monogenic resistances, closely linked
+markers are available in cereals already (e.g., Ordon et al. 1998; Graner et
+al. 2000) and many quantitative trait loci (QTL) for disease resistance
+have been identified , e.g., in barley (cf. Hayes et al. 2002). Respective
+molecular markers facilitate a more efficient selection for mono- and
+oligogenic resistance(s) and corresponding improvement of yield stabil­
+ity. Besides this, the rising efficiency in the transformation of cereals and
+the increasing number of isolated resistance genes, as well as the identi­
+fication of genes involved in resistance pathways, will offer new possi-
+Progr ess in Botany, Vol. 64
+© Springer -Verlag Berlin Heidelb erg 2003
+
+140 Genetics
+single resistance genes. Additionally, the phenomenon of a disease resis­
+tance breakdown is increased by the large-scale and long-term cultiva­
+tion of varieties carrying single resistance genes enabling the pathogen
+to overcome the resistance (Singh et al. 2001). Therefore, ongoing at­
+tempts in screening for new sources of resistance (Huang et al. 1997a),
+followed by the detection, tagging and incorporation in adapted culti­
+vars, are needed. In this respect the gene pool of cereals suitable for the
+introgression of resistance genes has been considerably enlarged by cell
+and tissue culture techniques , e.g., wide crosses via embryo rescue
+(Hammer 1997). On the other hand, strategies for prolonging the useful
+lifetime of these genes in cultivars in combination with creating broader
+resistance spectra have to be developed.
+In this respect, several methods for disease control by resistance
+breeding have been discussed (Kiyosawa 1982), one of them focusing on
+the combination of resistance genes. This task, which is often termed
+'pyramiding', is defined as the accumulation of host resistance genes in a
+single line or cultivar (Nelson 1978) and has been taken into considera­
+tion repeatedly during the last decades (Schaefer et al. 1963; Nelson
+1978; Pedersen 1988). The coeval mutation of a pathogen for virulence to
+two or more genes is supposed to be more unlikely than for single genes
+and therefore the effectiveness of combined genes is presumed to be
+more durable compared with their sole occurrence in different geno­
+types (Schaefer et al. 1963). Besides the prolongation of resistance du­
+rability, the strategy of gene pyramiding is also applied with the inten­
+tion of increasing the level and spectrum of disease resistance (Huang et
+al. 1997a; Kinane and Jones 2000) leading to a broad -spectrum resistance
+(Liu et al. 2000). This item is of special interest due to the fact that resis­
+tance genes often differ in their specificity against the various pathogen
+strains so that their combination often results in a broader spectrum of
+resistance than that conferred by each gene individually (Kloppers and
+Pretorius 1997; Bender et al. 2000; Singh et al. 2001). Attempts for
+pyramiding resistance genes have meanwhile been carried out for sev­
+eral crops and pathosysterns, e.g., in barley (Brown et al. 1996; Raman et
+al. 1999; Saeki et al. 1999; Pellio et al. 2000; Werner et al. 2000), wheat
+(Dweikat et al. 1997; Kloppers and Pretorius 1997; Liu et al. 2000), and
+rice (Yoshimura et al. 1995; Huang et al. 1997a; Hittalmani et al. 2000;
+Singh et al. 2001). In most cases two- and three-gene combinations with
+regard to homozygosity at the respective resistance loci have been per­
+formed resulting in a wider spectrum of the respective disease resis­
+tance.
+For example, in barley (Hordeum vulgare L.), pyramiding attempts
+have been carried out for different scald resistance genes resulting in
+improved resistances to the fungal pathogen Rhynchosporium secalis in
+comparison to lines carrying a single resistance gene: While Brown et al.
+(1996) performed the pair-wise combination of genes for resistance to"
+"In cereal breeding, explain GS integration w/ MAS+PS, incl. early vs late timing trade-offs.","In cereal breeding, genomic selection (GS) is complementary to marker-assisted selection (MAS) and phenotypic selection (PS). MAS is best for simply inherited, high-heritability traits, while GS is more effective for low-heritability quantitative traits controlled by many QTL, so breeding programs can use both together.
+
+For integration:
+- In a rapid-cycling phase, GS is applied early, right after crossing or after one selfing generation, to select based on genomic estimated breeding values (GEBVs) and recycle selected plants quickly as parents.
+- During the inbreeding phase, MAS and PS can be used to cull material through generations until about F4 or F5.
+- At F4/F5, lines are whole-genome genotyped and phenotyped to update training models and support selection.
+
+Early GS trade-off:
+- Major advantage: shortens breeding cycle by eliminating 2 or more seasons of selfing, allowing multiple cycles per year and increasing gain per unit time.
+- Main limitation: prediction models must be updated using later-derived inbred lines, so selection accuracy may depend on how often the training population is refreshed.
+
+Later GS among inbred lines trade-off:
+- Advantage: generally higher selection accuracy.
+- Limitation: does not reduce cycle time as much as early rapid cycling.
+
+Overall, the best balance between GS, MAS, and PS depends on resources, genotyping vs. phenotyping costs, achievable generation time, and trait heritability.","subset of the genotyped selection candidates (Endelman et al. 2014). GS can also be
+applied only among lines, without a rapid cycle program. Compared to a rapid
+cycling approach, applying GS only among lines would enable higher selection
+accuracies but would not reduce the breeding cycle duration as dramatically.
+Different GS breeding schemes should be evaluated for each speciﬁc situation to
+understand the trade-offs in cycle time and selection accuracy and to optimize gain
+from GS. Deterministic and stochastic simulations can be useful tools for this
+purpose.
+Most of the GS research in cereal crops has been conducted using inbred lines. In
+a deterministic simulation study by Heffner et al. ( 2010), GS among inbred lines
+was found to increase gain from selection per unit time twofold compared to MAS
+among inbred lines for known QTL. Examining how to optimize preliminary yield
+trials, Endelman et al. ( 2014) found that a 5% increase over phenotypic selection
+could be achieved by using GS in inbred lines.
+Other authors have reported evaluations of various GS schemes (Longin et al.
+2015). The study by Longin et al. (2015) evaluated GS using GS alone, GS followed
+by one or two rounds of PS, and the comparison to PS only. At an estimated GS
+accuracy of 0.3, the authors found that GS followed by one round of PS produced
+the highest genetic gain; however, the rankings of methods were dependent upon
+GS accuracy. For example, if GS accuracy could exceed 0.65 using GS only with no
+Fig. 5.1 Integration of GS in a pure line breeding program. In the rapid cycling phase, GS is used
+to enhance gain per unit time. In the inbreeding phase, MAS and PS can be imposed until the F4 or
+F5 generation, and then whole-genome genotyping is used to select individuals that enter the
+training population or are recycled in the crossing program. Each phase is conducted simulta-
+neously, and the GS models are updated annually
+114 J.E. Rutkoski et al.
+
+5.4 Breeding Methods for Variety Development in Cereals
+While any implementation of GS involves identifying high-performing individuals
+based on a genomic prediction model, the methods that different breeding programs
+could use may look quite different depending upon the budget and resources available
+to the breeding program, the relative cost of genotyping vs. phenotyping, the gener-
+ation time that can be achieved, and the heritability of the traits of interest. An
+important feature of GS is that it is complementary to MAS. Marker-assisted
+selection is most effective for simply inherited, high heritability traits, whereas GS
+is relatively more effective for low heritability traits conferred by many QTL. Both
+methods could be readily incorporated into a molecular breeding program and used in
+concert to enable breeders to select for simply inherited traits with MAS and for
+quantitative traits using GS. Applications such as spiked GBS (Rife et al.2015)w h i c h
+combine whole-genome proﬁling along with known marker assays could allow
+breeding programs to efﬁciently and affordably integrate both GS and MAS.
+5.4.1 Timing of GS Application Within Breeding Programs
+Implementation of GS in cereal crops can be imposed in early or late generations
+(Fig. 5.1). In early generation implementation, GS is applied to the selection
+candidates directly after crossing prior to any selﬁng or after one generation of
+selﬁng. Implementing GS in this way leads to a greater reduction in the breeding
+cycle duration because the two or more growing seasons that would normally be
+needed for selﬁng are eliminated (Heffner et al. 2010; Hickey et al. 2014). Selected
+individuals are cycled back into the crossing block as parents. This rapid cycling
+(Fig. 5.1) program allows individuals selected based on their genomic estimated
+breeding value (GEBV) to be planted, cross- or self-pollinated, and harvested two
+or more times a year for many cereal species. This would ordinarily not be possible
+because many important traits must be evaluated on ﬁxed lines using relatively
+large quantities of seed. One consideration for implementing GS in this way is that
+model updating will need to come from inbred lines derived from the selection
+candidates in earlier cycles and potentially several cycles of GS selection could be
+conducted for every single cycle of training population updating that is completed.
+Once early generation lines are selected as parents in the rapid cycling program,
+they can begin the inbreeding phase where culling based on MAS and PS can be
+applied at any generation until the F 4 or F5 generations as preferred. At that stage,
+the candidates should be whole-genome genotyped and phenotyped to train the
+model to predict GEBVs in the breeding population. The genome-wide marker data
+and phenotypic data can also be ﬁt in a model that captures nonadditive genetic
+effects to improve selection accuracy on the lines per se for promotion as varieties.
+Phenotyping and genotyping all selection candidates have been shown to be more
+favorable for improving rates of genetic gain compared to only phenotyping a
+5 Genomic Selection for Small Grain Improvement 113
+
+PS provided the highest genetic gain, but under more realistic conditions
+(GS accuracy 0.3), combinations of GS and PS were more productive. The use of
+doubled haploid lines would preclude the use of MAS and PS during the inbreeding
+phase of line development (Fig. 5.1).
+5.4.2 Genomic Selection for Germplasm Improvement
+Through Introgression of Alleles
+While the previous GS strategies have focused mainly on reducing the length of the
+breeding cycle or increasing the selection accuracy to increase the rate of genetic
+gains, GS could also be used for introgression of exotic alleles into elite germplasm.
+Crossa et al. ( 2016a) evaluated GS in landraces populations including over 2000
+Iranian and 8000 Mexican lines. They found good GS prediction accuracies even
+with GxE and population structure. They proposed that GS could be used to predict
+genotype performance of all genotyped accessions within a germplasm collection
+and then phenotyping could be conducted on the most promising lines, followed by
+introgressing the selected exotic alleles into elite germplasm. Bernardo ( 2009)
+simulated the effect of introgressing exotic alleles into adapted maize germplasm.
+His results showed that GS could be used to rapidly incorporate exotic alleles into
+elite germplasm. Additionally, this work provided some guidance on the number of
+cycles of GS that could be used with exotic alleles and where to apply GS in the
+introgression program. He found that the best starting material for GS was an F 2
+cross between exotic and adapted germplasm rather than a BC 1 or BC2. In general
+the rate of genetic progress declined after 7–8 cycles of GS, but assuming three
+cycles of GS could be completed per year resulted in an equivalent time frame of
+two rounds of PS (2 years per cycle). The 7–8 cycles of GS resulted in 1.25–2.4
+times the rate of gain compared to the two cycles of PS depending on the number of
+favorable alleles in the exotic germplasm and a trait heritability of 0.8. Another
+simulation study in maize suggested that GS should be applied in exotic-by-exotic
+crosses and used to increase the frequency of favorable alleles (Gorjanc et al. 2016).
+This was because using GS with exotic-by-elite crosses quickly resulted in
+reconstructing elite material. In practice, applying GS among exotic-by-exotic
+crosses could be problematic due to poor adaptation. For example, if the exotic
+individuals are photoperiod sensitive in the environments of interest, it will not be
+possible to gather meaningful grain yield data for prediction modeling. Importantly,
+Bernardo ( 2009) found that the quality (accuracy) of the phenotypic data and the
+quantity (number) of phenotyped individuals were crucial for ensuring success of
+GS in introgressing exotic germplasm. Thus, training population size and compo-
+sition needs to be carefully considered. Bernardo ( 2009) suggested that if trait
+heritability was low ( h2¼0.2), then more ﬁeld testing (replication) across multiple
+environments should be used to increase the entry-mean heritability (accuracy).
+Along with replication to improve the entry-mean heritability, Bernardo ( 2009)
+5 Genomic Selection for Small Grain Improvement 115"
+Assess DArT-Seq vs fixed SNP arrays for long-term GS in outbred forest trees.,"For long-term genomic selection in outbred forest trees, fixed SNP arrays are generally the better choice than DArT-Seq/GbS.
+
+- **DArT-Seq advantages:** low upfront cost, simultaneous SNP discovery and genotyping, no need for prior sequence information.
+- **Main limitation in outbred trees:** low and variable sequencing coverage leads to **high missing data** (often **40–80%**), inconsistent locus sampling across runs, and genotype reproducibility problems.
+- In highly heterozygous forest trees, these issues are worse because restriction-site variation creates presence/absence variation and makes heterozygote calling harder.
+- Evidence from replicates showed only **27%** of predicted restriction sites were sampled in Poplar, only **9.6%** of SNPs appeared in all 16 replicates, and even after heavy filtering genotype mismatches were about **2%**.
+- Imputation can help, but in outbred trees it is difficult and may still leave substantial error; one study reported **0.77–0.82** imputation accuracy, implying roughly **20%** of genotype calls could still be wrong.
+
+By contrast, **fixed SNP arrays** provide the **gold standard of reproducibility (>99%)**, both for sampling the same loci and calling the same genotype across batches and labs. They are also easier to manage operationally and better suited to repeatedly genotyping the same markers across generations, which is critical for stable long-term GS models.
+
+**Bottom line:** DArT-Seq is useful for proof-of-concept GS and marker discovery, but for a **professional, routine, long-term GS program in outbred forest trees, fixed SNP arrays are preferable** because of their much higher data quality and reproducibility.","Genomic loci and SNPs contained into them may be sampled or not in the
+replicates, and provided that the genomic locus is sampled, the genotype declared
+could match or not between replicates. In a study with Poplar, out of 16 GBS
+replicates of the same exact Populus trichocarpa tree Nisqually-1, the genotype
+used for genome sequencing, only 27% of in silico predicted restriction sites were
+sampled. Across the 16 replicates, on average, 26% of the SNPs were detected in
+only one of the 16 replicates, and only 9.6% were detected in all 16 replicates. Still,
+this amounted to ~34,000 loci out of the 334,000 total loci sampled. It is expected,
+however, that with a larger number of samples, the proportion of SNPs genotyped
+across all samples with high call rates would drop considerably. Genotype mis-
+matches between replicated samples were largely due to low read coverage and
+were about 2% after heavy ﬁltering (Schilling et al. 2014). These results are in line
+what has been reported for larger sample sizes genotyped by GbS in Pinus
+engelmannii (El-Dien et al. 2015). Out of 1.2 million initially sampled SNPs and
+after ﬁltering by allowing 30% or up to 60% of missing data, the number of useful
+SNPs dropped to 8,868 or 62,198 depending on the different imputation approaches
+used. An imputation accuracy of 0.77–0.82 indicates that some ~20% of the
+genotype data could still be incorrect. No mention was made of genotype repro-
+ducibility in that study or the impact of such inaccuracies on genomic predictions.
+It is intuitive that the success of genomic selection is dependent on SNP data
+quality. One has to be able to repeatedly genotype the same set of SNPs across
+generations with which the prediction models were initially developed in the
+training population. It is therefore not clear at this point whether the current GbS
+methods will be able to provide such data quality or, conversely, what is the
+tolerable genotyping inaccuracy for successfully applying GS. Demonstration GS
+proof-of-concept experiments are probably okay when carried out using GbS.
+However, to implement a professional routine of long-term GS into an industrial
+breeding program, very high standards of data quality should be sought. Currently
+only ﬁxed SNP array provides the gold standard of data reproducibility ( >99%),
+both in terms of sampling the same SNP loci and declaring the same exact genotype
+for the same individual across different sample batches and laboratories. This is
+probably one of the reasons why ﬁxed SNP arrays have been the only platform used
+so far in domestic animal breeding, animal model research, and human genomic
+medicine.
+Additionally, ﬁxed SNP array data are breeder friendly and easily manageable
+and stored without the bioinformatics burden associated with GbS data. The
+common criticism of ascertainment bias of ﬁxed content chips, a potential problem
+for population genetic studies, does not represent an issue for GS (Heslot et al.
+2013), reminding that any GBS method is equally subject to such bias due to the
+genome complexity reduction methods involved, the biases inherent to next-
+generation sequencing, and the ﬁltering pipeline applied for data analysis. Despite
+the falling prices of sequencing, the cost advantage of GbS in relation to ﬁxed SNP
+arrays has dropped substantially in recent times with more ﬂexible chip fabrication
+formats and competition among the main SNP chips vendors. It is therefore likely
+that ﬁxed arrays will also become the standard for GS in breeding of the major tree
+220 D. Grattapaglia
+
+GbS allows simultaneous discovery and genotyping of large numbers of markers
+with essentially no upfront costs (Davey et al. 2011). These methods require a
+genome complexity reduction step targeting a portion of the genome for selective
+enrichment, carried out either by PCR, restriction enzyme digestion, or sequence
+capture, followed by high-throughput NGS to ensure high sequence coverage of the
+targeted reduced representations (Cronn et al. 2012). Dominant presence/absence
+variants (PAVs), derived from polymorphism in the restriction recognition sites,
+and codominant single-nucleotide polymorphisms (SNPs) within the sequence tags
+are detected after aligning the sequence reads with or without the aid of a reference
+genome sequence. Restriction enzyme-based genome complexity reduction was
+also the basic approach of the widely used Diversity Arrays Technology (DArT)
+genotyping method (Kilian et al. 2012). This technology was successfully used to
+develop a ﬁxed 7,680 probe array for Eucalyptus that allowed the ﬁrst reported
+experimental results of genomic selection in forest trees (Grattapaglia et al. 2011b).
+This highly validated hybridization-based platform was later converted to an
+NGS-based assay named DArT-Seq, signiﬁcantly improving throughput and
+marker number for Eucalyptus (Sansaloni et al. 2011).
+9.5.2.3 Fixed Content SNP Arrays Versus GbS for Genomic Selection
+in Forest Trees
+GbS methods have been attractive for they provide large numbers of SNPs at a
+relatively lower cost per sample when compared to ﬁxed SNP arrays. GbS does not
+require prior sequence information, and there is no need to assemble a minimum
+number of samples of several hundred or thousands to defray the cost of chip
+fabrication. One only pays for the samples genotyped. The downside of GbS,
+however, is that to keep sample costs down, the sequencing coverage is generally
+low and therefore highly variable across the sampled loci in the genome (Beissinger
+et al. 2013). Technical issues associated with DNA digestion, PCR ampliﬁcation of
+libraries, and sequencing process itself add a considerable amount of variation in
+what genomic loci are sampled and at what sequence depth during sequencing. This
+fact results in large proportions of missing data, usually around 40% up to 80%
+depending on the depth of sequencing employed (Poland and Rife 2012). This
+problem is mitigated by SNP imputation in inbred species where reference haplo-
+types are easily determined by deep sequencing of founder lines and expected
+genotypes are homozygous. In outbred forest trees, however, genotype imputation
+is not straightforward as genomes are highly heterozygous, and multiple unrelated
+parents are used such that reference haplotypes are not easily determined.
+The problem of missing data in GbS tends to become substantial when
+attempting to genotype complex and highly heterozygous genomes of forest trees
+due to much higher restriction-site variation across individuals causing presence/
+absence variants and the need of higher coverage to declare heterozygous geno-
+types with conﬁdence. This in turn leads to genotype reproducibility issues when
+one attempts to genotype the same sample across independent experiments.
+9 Status and Perspectives of Genomic Selection in Forest Tree Breeding 219
+
+data instead of relying solely on the expected pedigree relationships. Marker data
+allows one to build a genomic relationships matrix that precisely determines the
+realized kinship among individuals in a breeding population. This procedure not
+only allows correcting pedigree errors but, more importantly, captures the random
+Mendelian sampling term resulting from gamete formation, such that the realized
+genetic covariances are now based on the actual proportion of the genome that is
+IBD or IBS between any two individuals (VanRaden 2008). Genomic selection
+based on realized genomic relationships can produce more accurate predictions
+than the pedigree-based method precisely because it exploits the variation created
+by Mendelian segregation. It is therefore relevant to devote some time to discuss the
+advantages and limitations of the different marker technologies currently available
+for the application of GS.
+Prior to the times of easy SNP discovery and genotyping, microsatellite markers
+were the workhorse of genetic analysis in forest trees, and they still are for many
+applications. Microsatellite genotyping has been adopted into breeding practice to
+resolve clonal identity, verify parentage, and reconstruct pedigrees as a way to
+reduce costs of controlled crosses (El-Kassaby and Lstiburek 2009; Grattapaglia
+et al. 2004; Lambeth et al. 2001). Usually between 10 and 20 microsatellites have
+been used providing abundant power to resolve parentage even with relatedness
+between alleged parents. In a recent study, it was shown that some 100 selected
+high-frequency SNPs are needed to match the power of 16 microsatellites for such
+applications in eucalypts (Telfer et al. 2015). However, typical microsatellite
+marker density is not sufﬁcient to estimate the genome fraction shared by two
+individuals and to apply this information to genomic predictions. The genotyping
+density together with the effective population size showed by far the largest impact
+on the prospects of GS in forest tree breeding (Grattapaglia and Resende 2011). The
+upper bound benchmark accuracy of phenotypic BLUP selection, set at 0.68 in that
+study, can be reached at a relatively low marker density, around 2–3 markers/cM, as
+long as the effective population size is kept below Ne ¼ 60. For an average genome
+of 1,500–2,000 cM, some ~5,000 SNPs would be necessary. For larger effective
+population sizes up to Ne ¼ 100, however, 10 or up to 20 markers/cM would be
+necessary for keeping high accuracies of GS. Such a target genotyping density will
+require genotyping platforms to yield somewhere between 20,000 and 50,000
+informative markers depending on the size of the recombining genome and the
+effective population size of the breeding population.
+The impact of the genotyping density used in the practice of GS will become
+even more important as generations of selection advance. In the absence of selec-
+tion, increasing marker density is beneﬁcial to the persistence of GEBV prediction
+accuracy over generations (Solberg et al. 2009) because higher marker densities
+enable GEBV accuracy to persist over time due to a slower decay of LD among
+tightly linked marker and trait loci. However, directional selection following the
+initial training population is expected to result in a rapid decline of accuracy (Muir
+2007). High-density genotyping was shown to be essential to sustain accuracy and
+keep selection effective for more generations in the presence of directional selec-
+tion when a ﬁnite number of QTL loci are assumed rather than an inﬁnitesimal
+216 D. Grattapaglia"
+"Why did dent–flint across-pool prediction mostly fail; cite relatedness, linkage-phase inconsistency, and flowering-trait exception?","Dent–flint across-pool prediction mostly failed because the two heterotic pools had **almost no relatedness** and **inconsistent marker–QTL linkage phases** across pools. The study notes that marker-based relationships between dent and flint lines were close to zero, so the GBLUP model could borrow little useful information across pools. It also reports that while nearby SNPs often had the same linkage phase, this consistency **dropped rapidly with distance**—below 0.6 beyond 0.25 Mb and near 0.5 at 1 Mb—making across-pool marker effects unreliable.
+
+As a result, predictive abilities across pools were generally **close to zero or even negative** for most families and traits. The main exception was **flowering traits**, where predictive abilities were **slightly above zero** in both dent-to-flint and flint-to-dent prediction.","of DMY with marker-based genetic similarity of founder
+lines were weak and nonsigniﬁcant (P . 0.05) in both panels
+when all SNPs were included in the analysis. When the sim-
+ilarity between founder lines was calculated on the basis of
+SNP markers segregating in either or both of the two families
+of the CwC prediction, the correlation between predictive
+ability and founder line similarity increased substantially
+in both panels ðr
+dent ¼ 0:39; rflint ¼ 0:47Þ but correlations
+in the dent panel were mainly driven by the high simple
+matching coefﬁcient of the related parental lines D06, D09,
+and UH250 ( Figure S11). A similar relationship between ge-
+netic similarity and predictive ability was observed for all other
+traits (data not shown).
+Prediction across maize heterotic pools
+As differences in linkage phases between markers and QTL
+are known to affect predictive ability , we compared linkage
+phases of SNP pairs for dent and ﬂint DH lines ( Figure S12).
+Among neighboring SNP pairs a fraction up to 81% showed
+equal linkage phases across both pools. However , for SNPs
+further apart the fraction of equal linkage phases dropped
+rapidly ,0.6 for a distance .0.25 Mb and was close to 0.5
+for a distance of 1 Mb. When comparing linkage phases of
+each dent with all ﬂint families individually for 5 – 10 Mb
+distant marker pairs, the fraction of equal linkage phases
+varied from 0.49 to 0.63 ( Figure S13 ).
+Predictive abilities across pools, de ﬁned as correlations
+between observed and predicted testcross values of dent lines
+(ﬂint lines) when ﬂint lines (dent lines) were in the esti-
+mation set, are reported in Table 2 with Bootstrap standard
+errors obtained from 1000 random samples. Generally , pre-
+diction across pools was not possible. Only for the ﬂowering
+traits predictive abilities were slightly higher than zero for
+both comparisons. We evaluated correlations between ob-
+served and predicted genotypic values from across pool pre-
+diction for each family individually ( Table S4). We observed
+that for DMY, lines from family UH304 could be better pre-
+dicted with families from the opposite pool than with dent
+families and showed quite high across pool predictive abilities
+over all traits (0.18–0.39). For most other families, predictive
+abilities across pools were close to zero or even negative.
+Discussion
+We analyzed the prediction of testcross performance in
+a large maize data set consisting of 21 biparental families
+from two distinct maize pools, dent and ﬂint, arranged in
+two half-sib panels. This comprehensive new data set allowed
+us to address important questions relevant for genome-based
+prediction of testcross performance for highly relevant agron-
+omic traits in multiparental populations. We investigated the
+impact of linkage phases, quantitative genetic parameters,
+and relatedness on the optimal design of estimation sets for
+multiparental families and across heterotic pools.
+Overall, observed levels of predictive abilities within
+heterotic pools were in a medium range for all ﬁve traits.
+For complex traits such as biomass yield, predictive abilities
+within pools ranging from 0.4 to 0.6 were satisfactory ,
+indicating that for most families the sample size was suf-
+ﬁciently large to obtain meaningful results. Similar predictive
+abilities within biparental maize families were observed for
+kernel and resistance traits in Riedelsheimer et al. (2013).
+Crossa et al. (2014) also reported for grain yield predictive
+abilities of 0.4, when prediction was performed within bipa-
+rental maize populations.
+LD structure and relatedness within biparental and
+multiparental families
+We investigated LD and linkage phases for our set of multiple
+biparental families, because the consistency of marker-QTL
+linkage phases between estimation set and selection candi-
+dates is a crucial assumption for ef ﬁcient genome-based
+prediction (Goddard and Hayes 2007; De Roos et al. 2009;
+Hayes et al. 2009). In biparental and multiparental popula-
+tions, different factors contribute to the creation of LD. Within
+a single biparental DH family , population structure is absent
+and LD is purely generated by linkage. For DH lines derived
+from the same cross of two homozygous parents the LD D
+AB
+between two polymorphic loci can be calculated on the basis
+of the recombination frequency r as 60
+
+ prediction was performed within bipa-
+rental maize populations.
+LD structure and relatedness within biparental and
+multiparental families
+We investigated LD and linkage phases for our set of multiple
+biparental families, because the consistency of marker-QTL
+linkage phases between estimation set and selection candi-
+dates is a crucial assumption for ef ﬁcient genome-based
+prediction (Goddard and Hayes 2007; De Roos et al. 2009;
+Hayes et al. 2009). In biparental and multiparental popula-
+tions, different factors contribute to the creation of LD. Within
+a single biparental DH family , population structure is absent
+and LD is purely generated by linkage. For DH lines derived
+from the same cross of two homozygous parents the LD D
+AB
+between two polymorphic loci can be calculated on the basis
+of the recombination frequency r as 60:25ð1 2 2rÞ with the
+sign depending on the linkage phase of the parents (same
+linkage phase of both parental gametes returns a positive
+value). Thus, D
+AB can take values 0.25 or 20.25 if no recom-
+bination takes place ðr ¼ 0Þ. If at least one locus is mono-
+morphic or if recombination frequency is at its maximum
+value of 0.5, D
+AB ¼ 0. Thus, two biparental families with
+one common parent (half-sib lines) are expected to have
+equal linkage phases because only gametes with the same
+linkage phase will show polymorphism with the common
+Figure 3 Predictive ability from cross-with-cross prediction (CwC) for dry
+matter yield (DMY) averaged over all combinations involving the same
+full-sib family in the estimation set compared to the heritability of this
+family. Colors indicate the founder line of the family in the estimation set.
+10 C. Lehermeier et al.
+
+reason why the prediction with multiple half-sib families
+worked equally well with a suf ﬁcient estimation set size is
+that the probability of changing linkage phases between
+estimation and test set is low if several half-sib families are
+combined into one estimation set. For practical applications
+it is appealing that our results show that new crosses can be
+predicted with high accuracy if multiple half-sib families are
+used in the estimation set as long as they share one common
+parent, and thus linkage phases between markers and QTL
+are largely consistent. Predictive abilities did not signi ﬁ-
+cantly change if four , six, or nine half-sib families constituted
+the estimation set of size n = 200 (data not shown). Includ-
+ing additional lines from the opposite pool ( i.e., unrelated
+families with different linkage phases) to the estimation set
+of LOCO-CV had no impact on predictive abilities in our
+study (results not shown). This might be surprising as one
+might expect that including unrelated families to the esti-
+mation set should lead to a decrease of prediction perfor-
+mance as different linkage phases between markers and QTL
+might exist that in turn lead to wrongly estimated marker
+effects (Riedelsheimer et al. 2013). However , as the relation-
+ship between dent and ﬂint lines observed by markers is
+close to zero, as seen on the heatmap of the realized kinship,
+the GBLUP model does not borrow information from lines of
+the other pool for prediction of lines from the same pool.
+Accordingly , it was also stated by de los Campos et al.
+(2013b) that data from unrelated individuals contribute lit-
+tle to prediction performance.
+In the dent panel, the prediction performance of LOCO-CV
+relative to R-CV differed for the investigated traits. For DMY,
+predictive abilities obtained with R-CV were /C24 0.4 and the
+same prediction performance could be reached with half-sib
+lines in LOCO-CV. For DMC however , predictive abilities within
+families were much higher (0.48 –0.77) and could generally
+not be reached with the full set of half-sib lines in LOCO-CV.
+The substantially decreased prediction performance of LOCO-
+CV compared to prediction within families for DMC might in-
+dicate that there are speci ﬁc genetic factors contributing to
+variation in DMC within each biparental family .
+In our data, an outlier was found with dent family UH304
+for the trait DMY, but not for the other traits. Lines of this
+family could not be predicted on the basis of other dent
+families for DMY in the LOCO-CV scenario. As all dent
+families are equally connected through one common parent,
+no relevant differences in linkage phases were observed
+between UH304 and the other dent families. Thus, differ-
+ences in linkage phases as it has been suggested in other
+outlying cases of low prediction performance (Riedelsheimer
+et al. 2013; Würschum et al. 2013) cannot be a reason for the
+poor prediction performance here. UH304 was the only
+Iodent founder line within the dent pool and thus less re-
+lated to the other founder lines. Additionally , UH304 is
+a more recently developed line compared to the other
+founder lines and may have experienced different selection
+pressure, especially for DMY. DH lines of this family had
+a higher genetic similarity among each other compared to
+the other dent families, as the two parental lines UH304 and
+F353 have both an Iodent background and showed high
+relatedness. However , despite the low genotypic variation
+observed from marker data, family UH304 showed an in-
+termediate variation of phenotypic values, which may have
+contributed to the low predictive ability for this family .
+Prediction across maize heterotic pools
+One of the most extreme settings in maize is the prediction
+across heterotic pools that are used for hybrid production; in
+Central Europe these are mainly dent and ﬂint. Generally ,
+the prediction across the two maize pools failed in our study
+with predictive abilities close to zero. This can be readily
+explained by the missing rel atedness and inconsistent
+linkage phases between the pools ( Figure S12 and Figure
+S13). Recently , Technow et al. (2013) investigated predic-
+tive abilities across dent and ﬂint lines for line per se perfor-
+mance of the trait Northern corn leaf blight resistance. They
+obtained slightly higher predictive abilities than those ob-
+served in our study , with a predictive ability up to 0"
+"Assess ASM-triggered IR in barley: PAL-independent pathways, Bci markers, and jasmonate crosstalk.","In barley, ASM is a key chemical inducer of induced resistance (IR), but cereal IR signaling is only partly understood. The context suggests that, unlike wheat where PAL activity is required for ASM-induced resistance, cereals may also use PAL-independent pathways, since in rice systemic resistance was induced without enhanced PAL activity. This supports the idea of multiple IR routes in monocots.
+
+For barley specifically, chemically induced resistance has been shown against *Blumeria graminis*, but not significantly against BYDV-PAV. Molecularly, many barley chemically induced (*Bci*) genes are differentially expressed after chemical inducer treatment. Most have unknown function, but some are linked to known IR components, including the lipoxygenase gene *Lox2:Hv:1* and several thionin genes. Because some *Bci* genes are homologous to wheat *Wci* genes, they may serve as useful markers for chemically induced resistance in cereals.
+
+Regarding jasmonate crosstalk, the context cites evidence in barley for two signaling pathways involving extracellular and intracellular jasmonate, indicating pathway interference and complexity in IR regulation. Overall, ASM-triggered IR in barley likely involves multiple signaling branches, potential PAL-independent mechanisms, *Bci* marker genes, and jasmonate-related crosstalk.","148 Genetics
+tance (Flor 1971) as a pathogen-specific resistance, IR results in a broad­
+spectrum, long-lasting resistance and is reported to be most effective
+against fungi, less effective against bacteria, and least effective against
+systemic viruses (Kuc 2001). Induced resistance can on the one hand be
+initiated by biotic factors like necrotizing pathogens, non-pathogens or
+root colonizing bacteria, and on the other by various chemicals (Fought
+and Kuc 1996; Benhamou and Belanger 1998).
+This type of resistance has been observed in a broad spectrum of
+plants belonging to all classes of higher plants (reviewed in Sticher et al.
+1997). Most investigations on IR have been conducted in dicotyledonous
+species and only little is known about IR in cereals, although Parker and
+Coleman (1997) described that structural features of resistance gene
+products in monocots and dicots are the same . However, the mecha­
+nism(s) leading to IR are especially in cereals not well understood. Nev­
+ertheless , IR has been described to be effective, e.g., in wheat (Triticum
+aestivum) against Blumeria graminis f. sp. tritici and Puccinia recondita,
+in rice against Magnaporthe grisea (Smith and Metraux 1991; Schweizer
+et al. 1999) and against Xanthomonas campestris pv. oryzae (Jin et al.
+1997), in barley against Blumeria graminis f. sp. hordei (Hwang and
+Heitefuss 1982; Sarhan et al. 1991), against Puccinia striiformis (Reiss
+1986) and against Drechslera teres (Iergensen et al. 1998). In contrast to
+Arabidopsis thaliana, root-colonizing bacteria leading to an enhanced
+level of resistance have not been reported for mono cots to date (van
+Loon et al. 1998). In cereals, the best-studied resistance inducer seems to
+be acibenzolar-S-methyl (ASM; Oostendorp et al. 2001). Chemically in­
+duced resistance (cIR) was shown in wheat against Puccina recondita ,
+Septoria nodorum and Blumeria graminis (Gorlach et al. 1996), in maize
+against Peronosclerospora sorghi (Morris et al. 1998), in rice against
+Magnaporthe grisea and Xanthomonas oryza (Shimura et al. 1981), and
+in barley against Blumeria graminis (Kogel et al. 1995), whereas no sig­
+nificant effects in barley against barley yellow dwarf virus (BYDV -PAY)
+were observed (Weiskorn et al. 2001). The level of protection gained by
+IR is to some extent varied (Manhandhar et al. 1999; Ton et al. 1999), but
+is considered to be affected by the genotype, the environment, and the
+inducing agent, respectively.
+Genotypic variation in inducible resistance has been described in sev­
+eral plants, e.g., carnation (van Peer et al. 1991), cucumber (Liu et al.
+1995), radish (Leeman et al. 1995), soybean (Underwood et al. 2000),
+poplar (Havill and Raffa 1999) and Arabidopsis (Ton et al. 2001). In cu­
+cumber (Liu et al. 1995) and wheat (Stadnik and Buchenauer 1999), it
+was shown that IR is mainly expressed in plants with a low level of ge­
+netically determined resistance and only to a lesser extent in resistant
+cultivars . In wheat, the penetration efficiency of Blumeria graminis was
+markedly decreased in the susceptible cv. Monopol after ASM treatment,
+but not in cv. Zentos which has a high level of quantitative resistance. An
+
+Strategies of Breeding for Durable Disease Resistance in Cereals 149
+enhancement of phenylalanine ammonium lyase (PAL) activity was
+found to be involved in both, quantitative resistance and in ASM­
+induced resistance. Accordingly, wheat mutants with a lack of PAL ac­
+tivity were not able to express IR after ASM treatment (Stadnik and
+Buchenauer 2000), whereas, in rice, activity of PAL was not enhanced
+after induction of systemic resistance (Smith and Metraux 1991), indi­
+cating that there are at least two pathways in monocots leading to IR.
+Similarly, Loebler and Lee (1998) suggested that there are two signaling
+pathways in barley interfering with extracellular and intracellular jas­
+monate , respectively . However, in cereals, defense signaling pathways
+are only partially understood and even less is known about defense
+mechanisms (Piffanelli et al. 1999).
+Between constitutive and inducible resistance either positive, or
+negative, or no trend in relationship was found for many plant pathogen
+and plant herbivore systems. In radish (Leeman et al. 1995), susceptible
+and resistant genotypes were able to establish IR on the same level.
+Moreover, in the soybean-Mexican bean beetle system no significant
+correlation was found between levels of induced and constitutive resis­
+tance measured in the same genotype (Underwood et al. 2000). Such
+genotypes with different genetics regarding inducibility can eventually
+be useful sources for breeding cultivars with a better IR response.
+Recently, in barley, many gene products differentially expressed after
+treatment with chemical inducers have been described, most of them
+with an unknown function called barley chemically induced (Bci) genes
+(Besser et al. 2000). Two genes were found to be homologous to those
+previously found to be involved in induced resistance, i.e., the lipoxyge ­
+nase gene Lox2 :Hv:1 (Voros et al. 1998; Hause et al. 1999) and various
+thionin genes (Kogel et al. 1995). Some of these Bci genes were also
+found to be homologous to induced genes in wheat (Wci-genes), indicat­
+ing that Bci genes might be useful cIR markers in cereals (Besser et al.
+2000). In wheat, the Wci genes were activated by chemical inducers like
+ASM, 2,6-dichloroisonicotinic acid (INA), and salicylic acid (SA), but no
+PRl-like genes (being common markers for IR in dicots) were induced
+(G6rlach et al. 1996; Molina et al. 1999). In rice, chemical induction re­
+sulted in the expression of a gene encoding a nucleotide-binding site and
+a leucine-rich repeat (Sakamoto et al. 1999), which are known to be in­
+volved in race-specific resistance reactions. The availability of mutants
+altered in the induction and expression of IR for the model plant Arabi­
+dopsis thaliana offers the opportunity for detailed genetic analyses on
+the mode of action and genetic determination of IR. For example, Ton et
+al. (2001) investigated to what extent the expression of IR depends on
+the level of basal resistance using Pseudomonasfluorescens as the induc­
+ing agent and P. syringae pv. tomato (Pst) as the challenging pathogen.
+Genetic analysis of crosses between inducible and non-inducible eco­
+types of Arabidopsis revealed that IR inducibility and basal resistance
+
+Strategies of Breeding for Durable Disease Resistance in Cereals 147
+The few examples presented elucidate that the number of identified
+QTLs has risen considerably due to more efficient marker techniques
+and it may be assumed that further progress will be gained by using the
+vast amount of information provided by genomics and bioinformatics
+(cf. Young 1999). For example, in rice, it has already been demonstrated
+that ESTs showing high homology to disease resistance genes or defense
+response (DR) genes to some extent cluster in genomic regions harbor­
+ing QTLs for disease resistance, i.e., against rice blast, bacterial blight
+and sheath blight (Wang et al. 2001). Similar results were obtained in
+wheat using DR genes concerning QTLs, e.g., for leaf rust and stem rust
+(Faris et al. 1999). Therefore, the large number of ESTs identified re­
+cently (Graner et al. 2000) will be a useful tool for QTL mapping in cere­
+als in the future.
+Provided respective QTLs have been mapped accurately and have
+proven their efficiency in repeated trials over years and locations, and in
+different populations, they can be treated like Mendelian factors and
+combined by marker-assisted selection (MAS) in applied breeding pro­
+grams. However, in comparison with MAS for single genes, which is
+already applied to some extent, e.g., in barley breeding (Schiemann and
+Backes 2000), the application of QTLs in practical breeding is rather
+limited. However, the potential of marker-assisted introgression of QTLs
+has been demonstrated, e.g., by transferring QTLs for stripe rust into a
+genetically unrelated background (Toojinda et al. 1998). Beyond this,
+respective positive QTLs for resistance to Puccinia striiformis f. sp. hor­
+dei derived from different lines have been successfully combined
+(pyramiding, Castro et al. 2000). It may be assumed, therefore, that in
+the future reliable and easy-to-handle marker systems, accurate map­
+ping procedures, the application of 'advanced backcross QTL analysis'
+(Bernacchi et al. 1998), and the use of information provided by genomics
+(e.g., ESTs) will facilitate a more efficient use of detection and applica­
+tion of QTLs for resistance in cereal breeding , thereb y leading to longer
+lasting, i.e., more durable, disease resistance.
+4 Induced Resistance
+In addition to genetically fixed resistance, the use of induced resistance
+(IR) can be considered as an environmentally friendly approach to plant
+protection. Induced resistance is described as a localized pathogen in­
+fection after preceding treatment with microbial components and prod­
+ucts or with structurally unrelated organic and inorganic compounds
+(Kuc 2001). Such locally or systemically induced resistance to infectious
+diseases was first reported by Chester (1933) and its potential for disease
+control was already described by Kuc et al. (1959), Loebenstein (1963),
+Ross (1966) and Ryals et al. (1994). In contrast to the gene for gene resis-"
+"Per study, how many EU sites hosted dent vs flint trials? Name all locations.","Dent trials were conducted at 4 European locations: Mons (France), Einbeck, Wadersloh, and Roggenstein (Germany).
+
+Flint trials were conducted at 6 European locations: Ploudaniel (France), Eckartsweier, Einbeck, Roggenstein, and Wadersloh (Germany), and La Coruña (Spain).","lÞÞ and genotype 3 location interaction variance compo-
+nents ðs2
+geðlÞÞ were modeled. Variance components and their
+standard errors were obtained by restricted maximum-
+likelihood estimation using the ASReml-R package (Butler
+et al. 2009). Trait heritabilities on a line mean basis were
+estimated within each family l according to standard proce-
+dures in plant breeding using Hung et al. (2012)
+Table 1 Total number of lines ( n) and simple matching coef ﬁcient (SM) between parental lines for 10 dent (F353 3 founder) and 11 ﬂint
+(UH007 3 founder) families. Mean, variance components, and heritabilities ( 6 standard errors) of each family for the traits dry matter
+yield and dry matter content
+Dry matter yield (dt/ha) Dry matter content (%)
+Founder n SM x s2
+g s2
+ge
+h2 x s2
+g s2
+ge
+h2
+B73 64 0.608 193.35 93.82 6 27.49 112.18 6 29.01 0.65 6 0.08 33.08 1.38 6 0.36 0.96 6 0.30 0.74 6 0.06
+D06 99 0.642 189.89 78.21 6 17.17 42.27 6 19.61 0.68 6 0.06 35.32 1.68 6 0.32 0.82 6 0.24 0.79 6 0.04
+D09 100 0.668 187.44 31.21 6 11.05 61.90 6 19.74 0.46 6 0.10 36.36 1.07 6 0.25 1.09 6 0.30 0.65 6 0.07
+EC169 66 0.617 184.18 46.49 6 18.89 82.22 6 31.01 0.49 6 0.12 36.92 2.28 6 0.53 0.84 6 0.42 0.79 6 0.05
+F252 96 0.671 178.08 120.75 6 21.88 40.27 6 14.49 0.83 6 0.03 37.99 1.81 6 0.40 1.95 6 0.37 0.69 6 0.06
+F618 104 0.645 194.70 20.18 6 9.96 66.15 6 20.96 0.33 6 0.12 33.10 2.25 6 0.40 1.09 6 0.26 0.82 6 0.03
+Mo17 53 0.627 184.51 89.04 6 34.79 194.84 6 42.90 0.54 6 0.11 32.30 2.15 6 0.56 1.38 6 0.35 0.79 6 0.05
+UH250 94 0.634 187.53 67.37 6 18.63 73.86 6 29.00 0.57 6 0.08 35.82 2.21 6 0.40 0.45 6 0.29 0.83 6 0.04
+UH304 81 0.765 192.51 47.71 6 14.08 39.26 6 22.62 0.58 6 0.09 35.30 2.29 6 0.46 0.72 6 0.31 0.81 6 0.04
+W117 84 0.625 176.16 76.46 6 21.51 99.73 6 27.86 0.62 6 0.08 35.66 3.10 6 0.60 0 0.84 6 0.03
+D152 72 0.749 172.39 121.09 6 25.65 38.94 6 19.94 0.82 6 0.04 32.78 1.56 6 0.36 0.47 6 0.38 0.75 6 0.05
+EC49A 29 0.656 186.06 57.84 6 29.06 79.69 6 48.64 0.58 6 0.14 30.64 0.99 6 0.42 1.45 6 0.54 0.68 6 0.11
+EP44 17 0.615 178.99 121.83 6 57.48 35.26 6 52.58 0.78 6 0.10 29.39 0.99 6 0.53 0.68 6 0.66 0.70 6 0.13
+EZ5 26 0.613 187.08 115.06 6 51.92 128.49 6 69.36 0.65 6 0.12 29.32 0.74 6 0.36 0 0.61 6 0.12
+F03802 129 0.753 186.30 85.19 6 15.68 59.28 6 19.82 0.71 6 0.04
+
+i.e., UH007 was the tester for all dent lines and F353 for all
+ﬂint lines. The dent panel ﬁeld trials were conducted in four
+European locations [Mons (France), Einbeck, Wadersloh,
+Roggenstein (Germany)]. Trials were laid out as augmented
+p-rep designs according to Williams et al. (2011). At each
+location, 960 entries consisting of 841 testcrosses of DH
+lines and parental testcrosses were planted with one-fourth
+of the entries replicated. Trials were laid out in 120 incom-
+plete blocks consisting of 10 plots each, and hybrid NK Fal-
+cone was used as check. Field trials for the ﬂint panel were
+conducted at six European locations [Ploudaniel (France),
+Eckartsweier , Einbeck, Roggenstein, Wadersloh (Germany),
+and La Coruña (Spain)]. The ﬁeld design also comprised
+960 entries, consisting of 811 testcrosses of DH lines and
+parental testcrosses, at each location. In the ﬂint panel one-
+third of the entries were replicated in each location. Trials
+were laid out in 160 incomplete blocks consisting of eight
+plots each and hybrid A287 was used as check variety . Five
+phenotypic traits were recorded in both panels, namely bio-
+mass dry matter yield (DMY, dt/ha), biomass dry matter
+content (DMC, %), plant height (PH, cm), days to tasseling
+(DtTAS, days), and days to silking (DtSILK, days). Pheno-
+typic data are provided in Supporting Information , File S1 .
+Phenotypic data analyses were conducted separately for the
+dent and ﬂint panels. For DMY and DMC, plots containing
+,70% of the median number of plants per location were
+classiﬁed as missing data. Outlying observations were con-
+secutively detected and removed on the basis of maximum
+deviate residuals (test according to Grubbs 1950; a ¼ 0:05)
+from a mixed model including genotype, location, genotype3
+location interaction, replication, and block effects. For each
+trait ,0.9% of plots were discard ed in the dent trials and
+,1.2% in the ﬂint trials. Individual variance components for
+each family were estimated using the model
+y
+ijklm ¼ m þ faml þ gðfamlÞi þ locj þ g /C1 locðfamlÞij þ repkðjÞ
+þ blockmðjkÞ þ eijklm;
+(1)
+where yijklm is the plot observation for genotype i of family l
+at location j in replication k in block m. The model contains
+an overall mean m, the random effects fam l, gðfamlÞi, loc j,
+g /C1 locðfamlÞij, rep kðjÞ, and block mðjkÞ, for the lth family , for
+genotype i conditional on family l, for the jth location, the
+genotype 3 location interaction conditional on family l, for
+the kth replication nested within locations, and the mth
+block nested within replications within locations, respec-
+tively . Plot speciﬁc residuals e
+ijklm were assumed to be nor-
+mally distributed with mean zero and family-speci ﬁc
+variance: eijklm /C24 Nð0; s2
+ðlÞÞ: For each family l unique genetic
+ðs2
+gðlÞÞ and genotype 3 location interaction variance compo-
+nents ðs2
+geðlÞÞ were modeled. Variance components and their
+standard errors were obtained by restricted maximum-
+likelihood estimation using the ASReml-R package (Butler
+et al. 2009). Trait heritabilities on a line mean basis were
+estimated within each family l according to standard proce-
+dures in plant breeding using Hung et al. (2012)
+Table 1 Total number of lines ( n) and simple matching coef ﬁcient (SM) between parental lines for 10 dent (F353 3 founder) and 11 ﬂint
+(UH007 3 founder) families. Mean, variance components, and heritabilities ( 6 standard errors) of each family for the traits dry matter
+yield and dry matter content
+Dry matter yield (dt/ha) Dry matter content (%)
+
+
+C. Lehermeier et al.  17 SI 
+ 
+Table S2    Total number of lines (n) and simple matching coefficient (SM) between parental lines of 10 dent (F353 x founder) 
+and  11  flint  (UH007  x  founder)  families.  Mean  ( x ),  genetic  variance  component  ( 2
+g ),  genotype  by  environment  variance 
+component ( 2
+ge ), and heritability (h2; ± standard error) of dent and flint families estimated for days to tasseling (DtTAS).  
+Founder  n  SM  x  
+2
+g   2
+ge   2h  
+B73  64  0.608  83.61 ± 0.16 0.78 ± 0.31 2.23 ± 0.39  0.50 ± 0.11
+D06  99  0.642  81.39 ± 0.13 1.07 ± 0.23 0.96 ± 0.2  0.71 ± 0.05
+D09  100  0.668  80.52 ± 0.15 1.54 ± 0.31 1.62 ± 0.24  0.73 ± 0.05
+EC169  66  0.617  81.66 ± 0.12 0.68 ± 0.18 0.23 ± 0.21  0.71 ± 0.07
+F252  96  0.671  80.12 ± 0.13 0.90 ± 0.24 2.00 ± 0.27  0.58 ± 0.08
+F618  104  0.645  83.81 ± 0.14 1.12 ± 0.27 1.65 ± 0.32  0.62 ± 0.07
+Mo17  53  0.627  84.63 ± 0.25 2.44 ± 0.67 1.45 ± 0.60  0.74 ± 0.07
+UH250  94  0.634  82.07 ± 0.13 1.12 ± 0.24 0.85 ± 0.25  0.71 ± 0.06
+UH304  81  0.765  81.70 ± 0.12 0.72 ± 0.18 0.65 ± 0.21  0.67 ± 0.07
+W117  84  0.625  80.69 ± 0.14 1.04 ± 0.25 0.82 ± 0.26  0.70 ± 0.06
+D152  72  0.749  79.63 ± 0.13 0.81 ± 0.21 1.22 ± 0.23  0.68 ± 0.06
+EC49A  29  0.656  82.39 ± 0.24 1.17 ± 0.47 1.89 ± 0.47  0.70 ± 0.09
+EP44  17  0.615  84.85 ± 0.51 3.74 ± 1.55 1.23 ± 0.79  0.87 ± 0.06
+EZ5  26  0.613  84.26 ± 0.41 3.80 ± 1.24 2.02 ± 0.50  0.88 ± 0.04
+F03802  129  0.753  81.08 ± 0.12 1.52 ± 0.24 1.16 ± 0.18  0.81 ± 0.03
+F2  54  0.723  79.45 ± 0.20 1.62 ± 0.41 1.37 ± 0.28  0.80 ± 0.05
+F283  133  0.716  81.15 ± 0.18 3.96 ± 0.55 1.14 ± 0.22  0.90 ± 0.01
+F64"
+"Assess obscurer monocot IR signaling routes, incl. PAL-independent pathways and poorly characterized cereal defenses.","In cereals, induced resistance (IR) signaling is still only partly understood. The context indicates that there are likely multiple monocot IR pathways:
+
+- A PAL-associated pathway: In wheat, enhanced phenylalanine ammonium lyase (PAL) activity was linked to both quantitative resistance and ASM-induced resistance, and PAL-deficient mutants failed to express IR after ASM treatment.
+- A PAL-independent pathway: In rice, PAL activity was not enhanced after systemic resistance induction, suggesting that monocots possess at least one alternative IR route.
+- In barley, two signaling pathways were proposed, involving extracellular and intracellular jasmonate signaling.
+
+Cereal defense mechanisms remain poorly characterized overall. Although chemically induced genes have been identified in barley (Bci genes) and wheat (Wci genes), many have unknown functions. Some known induced components include the barley lipoxygenase gene Lox2:Hv:1 and thionin genes. Unlike dicots, common PR1-like IR marker genes were not induced in wheat after ASM, INA, or SA treatment, implying that cereal IR differs mechanistically from well-studied dicot systems. Overall, the evidence supports diverse but still obscure IR signaling routes in monocots, with cereal defenses much less resolved than in dicots.","Strategies of Breeding for Durable Disease Resistance in Cereals 149
+enhancement of phenylalanine ammonium lyase (PAL) activity was
+found to be involved in both, quantitative resistance and in ASM­
+induced resistance. Accordingly, wheat mutants with a lack of PAL ac­
+tivity were not able to express IR after ASM treatment (Stadnik and
+Buchenauer 2000), whereas, in rice, activity of PAL was not enhanced
+after induction of systemic resistance (Smith and Metraux 1991), indi­
+cating that there are at least two pathways in monocots leading to IR.
+Similarly, Loebler and Lee (1998) suggested that there are two signaling
+pathways in barley interfering with extracellular and intracellular jas­
+monate , respectively . However, in cereals, defense signaling pathways
+are only partially understood and even less is known about defense
+mechanisms (Piffanelli et al. 1999).
+Between constitutive and inducible resistance either positive, or
+negative, or no trend in relationship was found for many plant pathogen
+and plant herbivore systems. In radish (Leeman et al. 1995), susceptible
+and resistant genotypes were able to establish IR on the same level.
+Moreover, in the soybean-Mexican bean beetle system no significant
+correlation was found between levels of induced and constitutive resis­
+tance measured in the same genotype (Underwood et al. 2000). Such
+genotypes with different genetics regarding inducibility can eventually
+be useful sources for breeding cultivars with a better IR response.
+Recently, in barley, many gene products differentially expressed after
+treatment with chemical inducers have been described, most of them
+with an unknown function called barley chemically induced (Bci) genes
+(Besser et al. 2000). Two genes were found to be homologous to those
+previously found to be involved in induced resistance, i.e., the lipoxyge ­
+nase gene Lox2 :Hv:1 (Voros et al. 1998; Hause et al. 1999) and various
+thionin genes (Kogel et al. 1995). Some of these Bci genes were also
+found to be homologous to induced genes in wheat (Wci-genes), indicat­
+ing that Bci genes might be useful cIR markers in cereals (Besser et al.
+2000). In wheat, the Wci genes were activated by chemical inducers like
+ASM, 2,6-dichloroisonicotinic acid (INA), and salicylic acid (SA), but no
+PRl-like genes (being common markers for IR in dicots) were induced
+(G6rlach et al. 1996; Molina et al. 1999). In rice, chemical induction re­
+sulted in the expression of a gene encoding a nucleotide-binding site and
+a leucine-rich repeat (Sakamoto et al. 1999), which are known to be in­
+volved in race-specific resistance reactions. The availability of mutants
+altered in the induction and expression of IR for the model plant Arabi­
+dopsis thaliana offers the opportunity for detailed genetic analyses on
+the mode of action and genetic determination of IR. For example, Ton et
+al. (2001) investigated to what extent the expression of IR depends on
+the level of basal resistance using Pseudomonasfluorescens as the induc­
+ing agent and P. syringae pv. tomato (Pst) as the challenging pathogen.
+Genetic analysis of crosses between inducible and non-inducible eco­
+types of Arabidopsis revealed that IR inducibility and basal resistance
+
+148 Genetics
+tance (Flor 1971) as a pathogen-specific resistance, IR results in a broad­
+spectrum, long-lasting resistance and is reported to be most effective
+against fungi, less effective against bacteria, and least effective against
+systemic viruses (Kuc 2001). Induced resistance can on the one hand be
+initiated by biotic factors like necrotizing pathogens, non-pathogens or
+root colonizing bacteria, and on the other by various chemicals (Fought
+and Kuc 1996; Benhamou and Belanger 1998).
+This type of resistance has been observed in a broad spectrum of
+plants belonging to all classes of higher plants (reviewed in Sticher et al.
+1997). Most investigations on IR have been conducted in dicotyledonous
+species and only little is known about IR in cereals, although Parker and
+Coleman (1997) described that structural features of resistance gene
+products in monocots and dicots are the same . However, the mecha­
+nism(s) leading to IR are especially in cereals not well understood. Nev­
+ertheless , IR has been described to be effective, e.g., in wheat (Triticum
+aestivum) against Blumeria graminis f. sp. tritici and Puccinia recondita,
+in rice against Magnaporthe grisea (Smith and Metraux 1991; Schweizer
+et al. 1999) and against Xanthomonas campestris pv. oryzae (Jin et al.
+1997), in barley against Blumeria graminis f. sp. hordei (Hwang and
+Heitefuss 1982; Sarhan et al. 1991), against Puccinia striiformis (Reiss
+1986) and against Drechslera teres (Iergensen et al. 1998). In contrast to
+Arabidopsis thaliana, root-colonizing bacteria leading to an enhanced
+level of resistance have not been reported for mono cots to date (van
+Loon et al. 1998). In cereals, the best-studied resistance inducer seems to
+be acibenzolar-S-methyl (ASM; Oostendorp et al. 2001). Chemically in­
+duced resistance (cIR) was shown in wheat against Puccina recondita ,
+Septoria nodorum and Blumeria graminis (Gorlach et al. 1996), in maize
+against Peronosclerospora sorghi (Morris et al. 1998), in rice against
+Magnaporthe grisea and Xanthomonas oryza (Shimura et al. 1981), and
+in barley against Blumeria graminis (Kogel et al. 1995), whereas no sig­
+nificant effects in barley against barley yellow dwarf virus (BYDV -PAY)
+were observed (Weiskorn et al. 2001). The level of protection gained by
+IR is to some extent varied (Manhandhar et al. 1999; Ton et al. 1999), but
+is considered to be affected by the genotype, the environment, and the
+inducing agent, respectively.
+Genotypic variation in inducible resistance has been described in sev­
+eral plants, e.g., carnation (van Peer et al. 1991), cucumber (Liu et al.
+1995), radish (Leeman et al. 1995), soybean (Underwood et al. 2000),
+poplar (Havill and Raffa 1999) and Arabidopsis (Ton et al. 2001). In cu­
+cumber (Liu et al. 1995) and wheat (Stadnik and Buchenauer 1999), it
+was shown that IR is mainly expressed in plants with a low level of ge­
+netically determined resistance and only to a lesser extent in resistant
+cultivars . In wheat, the penetration efficiency of Blumeria graminis was
+markedly decreased in the susceptible cv. Monopol after ASM treatment,
+but not in cv. Zentos which has a high level of quantitative resistance. An
+
+Strategies of Breeding for Durable Disease Resistance in Cereals 147
+The few examples presented elucidate that the number of identified
+QTLs has risen considerably due to more efficient marker techniques
+and it may be assumed that further progress will be gained by using the
+vast amount of information provided by genomics and bioinformatics
+(cf. Young 1999). For example, in rice, it has already been demonstrated
+that ESTs showing high homology to disease resistance genes or defense
+response (DR) genes to some extent cluster in genomic regions harbor­
+ing QTLs for disease resistance, i.e., against rice blast, bacterial blight
+and sheath blight (Wang et al. 2001). Similar results were obtained in
+wheat using DR genes concerning QTLs, e.g., for leaf rust and stem rust
+(Faris et al. 1999). Therefore, the large number of ESTs identified re­
+cently (Graner et al. 2000) will be a useful tool for QTL mapping in cere­
+als in the future.
+Provided respective QTLs have been mapped accurately and have
+proven their efficiency in repeated trials over years and locations, and in
+different populations, they can be treated like Mendelian factors and
+combined by marker-assisted selection (MAS) in applied breeding pro­
+grams. However, in comparison with MAS for single genes, which is
+already applied to some extent, e.g., in barley breeding (Schiemann and
+Backes 2000), the application of QTLs in practical breeding is rather
+limited. However, the potential of marker-assisted introgression of QTLs
+has been demonstrated, e.g., by transferring QTLs for stripe rust into a
+genetically unrelated background (Toojinda et al. 1998). Beyond this,
+respective positive QTLs for resistance to Puccinia striiformis f. sp. hor­
+dei derived from different lines have been successfully combined
+(pyramiding, Castro et al. 2000). It may be assumed, therefore, that in
+the future reliable and easy-to-handle marker systems, accurate map­
+ping procedures, the application of 'advanced backcross QTL analysis'
+(Bernacchi et al. 1998), and the use of information provided by genomics
+(e.g., ESTs) will facilitate a more efficient use of detection and applica­
+tion of QTLs for resistance in cereal breeding , thereb y leading to longer
+lasting, i.e., more durable, disease resistance.
+4 Induced Resistance
+In addition to genetically fixed resistance, the use of induced resistance
+(IR) can be considered as an environmentally friendly approach to plant
+protection. Induced resistance is described as a localized pathogen in­
+fection after preceding treatment with microbial components and prod­
+ucts or with structurally unrelated organic and inorganic compounds
+(Kuc 2001). Such locally or systemically induced resistance to infectious
+diseases was first reported by Chester (1933) and its potential for disease
+control was already described by Kuc et al. (1959), Loebenstein (1963),
+Ross (1966) and Ryals et al. (1994). In contrast to the gene for gene resis-"
+"If est. size hit 50, how might CwC/LOCO-CV predictive ability compare with heritability/matching for DMC, PH, DtTAS, DtSILK, DMY?","At an estimation set size of 50, the context only gives a direct LOCO-CV reference for **DtSILK**: Figure S6 says the **dashed vertical lines label predictive abilities at an estimation set size of 50**, so DtSILK predictive ability can be read there for Dent and Flint and compared with the horizontal lines for within-family prediction.
+
+For the other traits, the context does **not provide numeric values at est. size 50**, but it does specify the comparisons:
+
+- **DMC, PH, DtTAS, DtSILK**: Figure S10 compares **CwC predictive ability** averaged over combinations involving the same full-sib family with that family’s **heritability**.
+- **DMY**: Figure S11 compares **CwC predictive ability** with the **simple matching coefficient** between founder lines of the crosses.
+- **DtSILK**: Figure S6 shows **LOCO-CV predictive ability** as estimation set size increases, including **size 50**.
+
+So, if the estimation size reached 50:
+- **LOCO-CV**: only **DtSILK** is explicitly shown at that size in the context.
+- **CwC**: for **DMC, PH, DtTAS, DtSILK**, it is evaluated against **heritability**; for **DMY**, against **founder-line matching**.  
+But the context does not state exact comparative outcomes or values.","C. Lehermeier et al.  11 SI 
+ 
+ 
+ 
+Figure S10    Predictive ability from cross‐with‐cross prediction (CwC) averaged over all combinations involving the same full‐sib 
+family  in  the  estimation  set  compared  to  the  heritability  of  this  family.  Colors  indicate  the  founder  line  of  the  family  in  the 
+estimation set. A) Dry matter content (DMC). B) Plant height (PH). C) Days to tasseling (DtTAS). D) Days to silking (DtSILK).
+
+12 SI  C. Lehermeier et al. 
+ 
+ 
+   
+Figure S11    Predictive ability of dry matter yield (DMY) from cross‐with‐cross prediction (CwC) averaged over both reciprocal 
+estimations compared to simple matching coefficient between founder lines of crosses. Colors indicate the founder line of the 
+family in the estimation and test set, respectively. A) Dent. B) Flint.
+
+C. Lehermeier et al.  7 SI 
+ 
+ 
+ 
+Figure S6    Mean predictive ability of days to silking (DtSILK) from LOCO‐CV for increasing estimation set size. Mean predictive 
+ability  from  prediction  within  biparental  families  is  shown  by  different  colored  horizontal  lines.  A)  Dent.  B)  Flint.  The  dashed 
+vertical lines label predictive abilities at an estimation set size of 50."

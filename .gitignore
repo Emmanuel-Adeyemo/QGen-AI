@@ -1,0 +1,14 @@
+venv/
+notebooks/
+subset/
+data/
+.idea/
+.env
+__pycache__/
+archieve/
+chromadb/
+*.sqlite3
+*.bin
+*.pickle
+*.pkl
+.DS_Store

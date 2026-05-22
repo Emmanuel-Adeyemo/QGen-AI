@@ -1,0 +1,5 @@
+Metric,Average Score,Pass Rate,Total Cases
+Faithfulness,0.81,88.89%,9
+Contextual Precision,0.93,88.89%,9
+Contextual Recall,0.98,100.00%,9
+Answer Relevancy,0.96,100.00%,9
