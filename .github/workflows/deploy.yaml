@@ -21,7 +21,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           # add hf as a remote repo
-          git remote add hf https://Emmanuel-Adeyemo:$HF_TOKEN@huggingface.co/spaces/Emmanuel-Adeyemo/QGen-AI
+          git remote add hf https://eadey:$HF_TOKEN@huggingface.co/spaces/Emmanuel-Adeyemo/QGen-AI
           
           # force push
           git push hf main --force
