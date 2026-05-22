@@ -11,3 +11,4 @@ langchain-community>=0.4.1
 pinecone>=7.3.0
 streamlit>=1.57.0
 pypdf>=6.11.0
+langchain-pinecone>=0.2.13
