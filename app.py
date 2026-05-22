@@ -68,6 +68,21 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
 pinecone_api_key = os.getenv("PINECONE_API_KEY") or st.secrets.get("PINECONE_API_KEY")
 
+uploaded_file = st.sidebar.file_uploader("Upload an external paper", type=["pdf", "txt"])
+
+if uploaded_file is not None:
+    # os.path.join(".", "uploads", uploaded_file.name) -> triggers 403
+
+    # this forces the path into the system's /tmp directory
+    TEMP_DIR = Path("/tmp")
+    file_path = TEMP_DIR / uploaded_file.name
+
+    # write to the safe directory
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    st.sidebar.success(f"File safely staged in container memory!")
+
 
 # load and cache pre-baked search indices
 @st.cache_resource
