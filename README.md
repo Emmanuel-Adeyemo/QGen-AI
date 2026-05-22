@@ -44,7 +44,7 @@ truthfulness were empirically verified using an automated LLM-as-a-judge evaluat
 plant breeding test cases.
 
 
-![RAG Evaluation Metrics](https://raw.githubusercontent.com/Emmanuel-Adeyemo/QGen-AI/main/output/plots/deepeval_evaluation_metrics.png)
+![RAG Evaluation Metrics](https://raw.githubusercontent.com/Emmanuel-Adeyemo/QGen-AI/repo-assets/output/plots/deepeval_evaluation_metrics.png)
 
 
 ### Evaluation Metrics Breakdown:
