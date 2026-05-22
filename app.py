@@ -14,6 +14,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_classic.document_loaders import PyPDFLoader
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_pinecone import PineconeVectorStore
+from pinecone import Pinecone
 
 # UI layout tuning
 st.set_page_config(
@@ -156,6 +157,50 @@ if 'active_sources' not in st.session_state:
 if 'active_query' not in st.session_state:
     st.session_state.active_query = ""
 
+
+@st.cache_data(ttl=60) # cache for 1 minute so API not spammed on every click
+def get_live_database_metrics(api_key, index_name="qgen-ai-index"):
+    try:
+        pc = Pinecone(api_key=api_key)
+        index = pc.Index(index_name)
+
+        # total chunk count
+        stats = index.describe_index_stats()
+        total_chunks = stats['total_vector_count']
+
+        if total_chunks == 0:
+            return 0, 0
+
+        #
+        dummy_vector = [0.0] * 3072
+
+        query_response = index.query(
+            vector=dummy_vector,
+            top_k=10000,  # Set high enough to sweep all your chunks
+            include_metadata=True
+        )
+
+        # extract unique filenames
+        unique_articles = set()
+        for match in query_response.get('matches', []):
+            metadata = match.get('metadata', {})
+
+            source_file = metadata.get('source') or metadata.get('file_name')
+            if source_file:
+
+                unique_articles.add(os.path.basename(source_file))
+
+        total_articles = len(unique_articles) if unique_articles else 0
+        return total_articles, total_chunks
+
+    except Exception as e:
+        # fallback
+        return 0, 0
+
+# get count
+total_articles, total_chunks = get_live_database_metrics(pinecone_api_key)
+
+
 # sidebar column (session history and library inventory)
 with st.sidebar:
     st.title('QGen AI')
@@ -164,27 +209,27 @@ with st.sidebar:
 
     st.subheader('System Status')
 
-    try:
-        # get all document meta stored in chromadb
-        all_docs = core_vector_ret.get()
-
-        if all_docs and 'metadatas' in all_docs and all_docs['metadatas']:
-            # extract unique file paths/names from meta list
-            unique_articles = {
-                meta.get('source')
-                for meta in all_docs['metadatas']
-                if meta and meta.get('source')
-            }
-            total_articles = len(unique_articles)
-            total_chunks = len(all_docs['metadatas'])
-        else:
-            total_articles = 0
-            total_chunks = 0
-
-    except Exception:
-        # fallback if the chromadb is empty or uninitialized
-        total_articles = 0
-        total_chunks = 0
+    # try:
+    #     # get all document meta stored in chromadb
+    #     all_docs = core_vector_ret.get()
+    #
+    #     if all_docs and 'metadatas' in all_docs and all_docs['metadatas']:
+    #         # extract unique file paths/names from meta list
+    #         unique_articles = {
+    #             meta.get('source')
+    #             for meta in all_docs['metadatas']
+    #             if meta and meta.get('source')
+    #         }
+    #         total_articles = len(unique_articles)
+    #         total_chunks = len(all_docs['metadatas'])
+    #     else:
+    #         total_articles = 0
+    #         total_chunks = 0
+    #
+    # except Exception:
+    #     # fallback if the chromadb is empty or uninitialized
+    #     total_articles = 0
+    #     total_chunks = 0
 
     col1, col2 = st.columns(2)
     with col1:
