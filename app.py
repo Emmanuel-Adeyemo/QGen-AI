@@ -193,8 +193,15 @@ def process_new_pdfs(file_bytes, file_name):
 
 
 # initialize backend engine components
-core_vector_ret, core_bm25_retriever = load_core_retrievers()
-get_llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, api_key=openai_api_key)
+try:
+    core_vector_ret, core_bm25_retriever = load_core_retrievers()
+    get_llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, api_key=openai_api_key)
+    database_connected = True
+except Exception as e:
+    logger.critical(f'Database down or issue with database api key: {str(e)}')
+    database_connected = False
+    core_vector_ret = None
+
 
 # initialize persistent session state trackers
 if 'history' not in st.session_state:
@@ -259,7 +266,11 @@ def get_live_database_metrics(api_key, index_name="qgen-ai-index"):
 
 
 # get count
-total_articles, total_chunks = get_live_database_metrics(pinecone_api_key)
+if database_connected:
+    total_articles, total_chunks = get_live_database_metrics(pinecone_api_key)
+else:
+    total_articles, total_chunks = 0, 0
+
 
 # sidebar column (session history and library inventory)
 with st.sidebar:
@@ -268,6 +279,7 @@ with st.sidebar:
     st.markdown('---')
 
     st.subheader('System Status')
+
 
     col1, col2 = st.columns(2)
     with col1:
@@ -364,6 +376,10 @@ with st.sidebar:
 # main app workspace
 st.title('Scientific Workspace')
 
+# UI error if there are issues with Pinecone
+if not database_connected:
+    st.error('**Database offline**: Pinecone credentials rejected or network unreachable.')
+
 # context layout
 if uploaded_file is not None:
     scope = st.radio(
@@ -392,25 +408,44 @@ with st.form(key="search_query_form", clear_on_submit=False):
     submit_pipeline = st.form_submit_button(label="Execute Pipeline", type="primary")
 
 if submit_pipeline and user_query:
-    st.session_state.active_query = user_query
+    # error if db is down but allow for paper-only use
+    if not database_connected and scope != 'Uploaded Paper Only':
+        st.error('**Pipeline blocked**: Cannot query from core database while pinecone is offline.')
+    else:
+        st.session_state.active_query = user_query
+        retrieved_chunks = None
 
-    with st.spinner('Assembling query and parsing literatures...'):
-        try:
+        with st.spinner('Assembling query and parsing literatures...'):
+
             try:
-                core_vector_retriever = core_vector_ret.as_retriever(search_kwargs={'k': k_depth})
-                core_bm25_retriever.k = k_depth
 
                 # matrix construction for type of engine
+                # core db requires pinecone
                 if scope == 'Core Database Only':
+                    if not database_connected or core_vector_ret == None:
+                        raise RetrievalException(
+                            message='Cannot perform core database search, pinecone is offline.',
+                            index_name='qgen-ai-index'
+                        )
+                    core_vector_retriever = core_vector_ret.as_retriever(search_kwargs={'k': k_depth})
+                    core_bm25_retriever.k = k_depth
+
                     active_retriever = EnsembleRetriever(
                         retrievers=[core_vector_retriever, core_bm25_retriever],
                         weights=[v_weight, k_weight]
                     )
+                # if paper is uploaded and search is paper specific
                 elif scope == 'Uploaded Paper Only':
                     if not temp_chunks:
                         raise ValidationException(
                             message='No active memory chunk present for uploaded PDF',
                             validation_field='scope')
+
+                    if not openai_api_key:
+                        raise ValidationException(
+                            message='**Missing OpenAI API Key**:Cannot generate vector embeddings..',
+                            validation_field='openai_api_key'
+                        )
                     embeddings = OpenAIEmbeddings(model='text-embedding-3-large', api_key=openai_api_key)
                     temp_db = Chroma.from_documents(temp_chunks, embeddings)
                     temp_vector_retriever = temp_db.as_retriever(search_kwargs={'k': k_depth})
@@ -421,12 +456,34 @@ if submit_pipeline and user_query:
                         retrievers=[temp_vector_retriever, temp_bm25_retriever],
                         weights=[v_weight, k_weight]
                     )
-                else:  # blend both together
+                else:  # blend both together, need pineconde and uploaded paper
+                    # for uploaded pdf
                     if not temp_chunks:
                         raise ValidationException(
                             message='Unable to perform cross-lit synthesis, no active memory chunk available for uploaded PDF',
                             validation_field='scope'
                         )
+
+                    # for openai key in embedding
+                    if not openai_api_key:
+                        raise ValidationException(
+                            message='**Missing OpenAI API Key**:Cannot generate vector embeddings..',
+                            validation_field='openai_api_key'
+                        )
+
+                    # for db
+                    if not database_connected or core_vector_ret == None:
+                        raise RetrievalException(
+                            message='Cannot perform core database search, pinecone is offline.',
+                            index_name='qgen-ai-index'
+                        )
+
+
+                    # pinecone db
+                    core_vector_retriever = core_vector_ret.as_retriever(search_kwargs={'k': k_depth})
+                    core_bm25_retriever.k = k_depth
+
+                    # uploaded paper
                     embeddings = OpenAIEmbeddings(model='text-embedding-3-large', api_key=openai_api_key)
                     temp_db = Chroma.from_documents(temp_chunks, embeddings)
                     temp_vector_retriever = temp_db.as_retriever(search_kwargs={'k': k_depth})
@@ -438,71 +495,81 @@ if submit_pipeline and user_query:
                         retrievers=[core_vector_retriever, core_bm25_retriever, temp_vector_retriever, temp_bm25_retriever],
                         weights=[v_weight * 0.5, k_weight * 0.5, v_weight * 0.5, k_weight * 0.5]
                     )
-
+                try:
                     retrieved_chunks = active_retriever.invoke(user_query)
                     st.session_state.active_sources = retrieved_chunks
-            except RAGException:
-                raise
+
+                except Exception as e:
+                    raise RetrievalException(
+                        message='Encountered an unexpected database retriever error. ',
+                        index_name='ensemble_retriever',
+                        metadata={'original_message': str(e)}
+                    )
+
+                if retrieved_chunks is None:
+                    raise RetrievalException(
+                        message='The search indexed successfully but could not retrieve structured chunks.',
+                        index_name=scope
+                    )
+
+                try:
+                    # assemble grounding matrix
+                    context_string = "\n\n".join([
+                        f"--- START SOURCE CHUNK ({chunk.metadata.get('source', 'Unknown')}, Page {chunk.metadata.get('page', 'Unknown')}) ---\n"
+                        f"{chunk.page_content}\n"
+                        f"--- END SOURCE CHUNK ---"
+                        for chunk in retrieved_chunks
+                    ])
+
+                    #  grounding prompt template
+                    prompt = ChatPromptTemplate.from_messages([
+                        ("system", (
+                            "You are an elite AI Research Assistant specializing in quantitative genetics.\n\n"
+                            "Your task is to answer the User Query using ONLY the text segments provided in the Context block.\n\n"
+                            "CRITICAL GUARDRAILS:\n"
+                            "1. If the text details multiple concepts (e.g., different statistical models) separately but does not explicitly compare them, "
+                            "you ARE permitted to use your advanced domain knowledge to connect the dots, synthesize their differences, and perform a rigorous comparative analysis.\n"
+                            "However, you must clearly distinguish between facts directly pulled from the paper and your own expert synthesis."
+                            "Do not attempt to merge unrelated data points into a cohesive narrative\n"
+                            "2. STRICT GROUNDING: Do not use your own external background knowledge to answer. Treat each chunk as an isolated fact."
+                            "If the context chunks do not explicitly state the mechanism or answer, say 'The provided articles do not contain enough "
+                            "specific data to answer this query.'\n"
+                            "3. LITERAL CITATIONS: You must format citations exactly as (filename: [Exact Source Filename], p. [Page Number]). "
+                            "Do not invent filenames from section headers or text inside the chunks.\n"
+                            "4. SILENT FILTERING: Ignore context chunks that do not directly address the subject of the query.\n\n"
+                            "Do not attempt to merge unrelated data points into a cohesive narrative.\n"
+                            "5. **Handle Missing Specifics Safely:** If the query asks for a specific value or comparison at a certain point and the text only provides it for one trait, explicitly state what is present and specify exactly what is missing."
+                            "6. **Strict Verbatim Grounding:** Do not guess, smooth over discrepancies, or generalize. Every name, location, and numeric assertion must map cleanly to an explicit statement in the context."
+                            "Context:\n{context}"
+                        )),
+                        ("human", "{query}")
+                    ])
+
+                    # execute synthesis chain
+                    chain = prompt | get_llm | StrOutputParser()
+
+                    # simulate openai connection timeout
+                    # raise TimeoutError('API gateway timed out after 30 seconds.')
+
+                    response = chain.invoke({'context': context_string, 'query': user_query})
+                    st.session_state.active_response = response
+
+                    # append to history tracking matrix
+                    st.session_state.history.append({
+                        'query': user_query,
+                        'response': response,
+                        'sources': retrieved_chunks
+                    })
+                except Exception as e:
+                    raise LLMException(
+                        message='Encountered an unexpected error. Upstream LLM model failed to respond.',
+                        provider='OpenAI - GPT - 4o - mini',
+                        metadata={'Original message': str(e)}
+                    )
+            except RAGException as e:
+                st.error(f'Pipeline Error: {e.message}')
             except Exception as e:
-                raise RetrievalException(
-                    message='Encountered an unexpected database retriever error. ',
-                    metadata={'selected_scope': scope, 'original_message': str(e)}
-                )
-
-            try:
-                # assemble grounding matrix
-                context_string = "\n\n".join([
-                    f"--- START SOURCE CHUNK ({chunk.metadata.get('source', 'Unknown')}, Page {chunk.metadata.get('page', 'Unknown')}) ---\n"
-                    f"{chunk.page_content}\n"
-                    f"--- END SOURCE CHUNK ---"
-                    for chunk in retrieved_chunks
-                ])
-
-                #  grounding prompt template
-                prompt = ChatPromptTemplate.from_messages([
-                    ("system", (
-                        "You are an elite AI Research Assistant specializing in quantitative genetics.\n\n"
-                        "Your task is to answer the User Query using ONLY the text segments provided in the Context block.\n\n"
-                        "CRITICAL GUARDRAILS:\n"
-                        "1. If the text details multiple concepts (e.g., different statistical models) separately but does not explicitly compare them, "
-                        "you ARE permitted to use your advanced domain knowledge to connect the dots, synthesize their differences, and perform a rigorous comparative analysis.\n"
-                        "However, you must clearly distinguish between facts directly pulled from the paper and your own expert synthesis."
-                        "Do not attempt to merge unrelated data points into a cohesive narrative\n"
-                        "2. STRICT GROUNDING: Do not use your own external background knowledge to answer. Treat each chunk as an isolated fact."
-                        "If the context chunks do not explicitly state the mechanism or answer, say 'The provided articles do not contain enough "
-                        "specific data to answer this query.'\n"
-                        "3. LITERAL CITATIONS: You must format citations exactly as (filename: [Exact Source Filename], p. [Page Number]). "
-                        "Do not invent filenames from section headers or text inside the chunks.\n"
-                        "4. SILENT FILTERING: Ignore context chunks that do not directly address the subject of the query.\n\n"
-                        "Do not attempt to merge unrelated data points into a cohesive narrative.\n"
-                        "5. **Handle Missing Specifics Safely:** If the query asks for a specific value or comparison at a certain point and the text only provides it for one trait, explicitly state what is present and specify exactly what is missing."
-                        "6. **Strict Verbatim Grounding:** Do not guess, smooth over discrepancies, or generalize. Every name, location, and numeric assertion must map cleanly to an explicit statement in the context."
-                        "Context:\n{context}"
-                    )),
-                    ("human", "{query}")
-                ])
-
-                # execute synthesis chain
-                chain = prompt | get_llm | StrOutputParser()
-                response = chain.invoke({'context': context_string, 'query': user_query})
-                st.session_state.active_response = response
-
-                # append to history tracking matrix
-                st.session_state.history.append({
-                    'query': user_query,
-                    'response': response,
-                    'sources': retrieved_chunks
-                })
-            except Exception as e:
-                raise LLMException(
-                    message='Encountered an unexpected error. Upstream LLM model failed to respond.',
-                    provider='OpenAI - GPT - 4o - mini',
-                    metadata={'Original message': str(e)}
-                )
-        except RAGException as e:
-            st.error(f'Pipeline Error: {e.message}')
-        except Exception as e:
-            st.error(f'Encountered an unexpected error: {str(e)}')
+                st.error(f'Encountered an unexpected error: {str(e)}')
 
 
 # side by side window
