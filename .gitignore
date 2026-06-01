@@ -14,3 +14,6 @@ chromadb/
 
 .DS_Store
 bm25_index.pkl.gz
+CR&Rdmap.md
+Imp_CL.md
+tmp/
