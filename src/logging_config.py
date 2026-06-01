@@ -17,6 +17,7 @@ def logging_setup(name='QGenAI'):
     )
 
     logger.setLevel(logging.INFO)
+    # logger.setLevel(logging.WARN)
 
     # logging for streamlit
     st_handler = logging.StreamHandler()

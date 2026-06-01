@@ -18,6 +18,7 @@ class RAGException(Exception):
 
 class RetrievalException(RAGException):
     def __init__(self, message, metadata=None, index_name=True):
+        # super().__init__(message)
         meta = metadata or {}
         if index_name:
             meta['targeted_index'] = index_name
