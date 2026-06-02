@@ -37,3 +37,27 @@ class QueryValidation:
         # everything good
         return True, ''
 
+
+class FileValidation:
+    @staticmethod
+    def validate_file_size(file_bytes):
+
+        try:
+            # get size limit
+            size_lim = os.getenv('MAX_SIZE_LIM', 52428800)
+        except ValueError:
+            # fall back but log issue
+            logger.warning('Problem grabbing size limit from env file, falling back to default of 50MB.')
+            size_lim = 52428800
+
+        if file_bytes > size_lim:
+            lim_mb = file_bytes / (1024 * 1024)
+            sz_mb = size_lim / (1024 * 1024)
+            return False, f'Uploaded file size ({sz_mb})exceeds allowed size limit of {lim_mb}.',
+        return True, ''
+
+    @staticmethod
+    def validate_file_is_pdf(file_name):
+        if not file_name.lower().endswith('.pdf'):
+            return False, 'System can only accept PDF files.'
+        return True, ''
