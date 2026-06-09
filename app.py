@@ -19,6 +19,7 @@ from langsmith import expect
 from pinecone import Pinecone
 from src.logging_config import logger
 from src.error_logging import RAGException, RetrievalException, LLMException, ValidationException
+from src.config import config_inv, config_valid, config_error_msg
 
 # logger = logging_setup()
 # logger.info('Initializing QGen AI pipeline...')
@@ -81,8 +82,18 @@ st.markdown("""
 
 load_dotenv()
 
-openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
-pinecone_api_key = os.getenv("PINECONE_API_KEY") or st.secrets.get("PINECONE_API_KEY")
+
+if not config_valid:
+    st.error('**System Boot Failure**')
+    st.info('Check env file for cloud and working credentials.')
+    st.stop()
+
+else:
+    # openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+    # pinecone_api_key = os.getenv("PINECONE_API_KEY") or st.secrets.get("PINECONE_API_KEY")
+    openai_api_key = config_inv.openai_api_key
+    pinecone_api_key = config_inv.pinecone_api_key
+
 
 
 
