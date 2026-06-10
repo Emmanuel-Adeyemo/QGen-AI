@@ -3,8 +3,11 @@ import os
 import pickle
 import gzip
 from pathlib import Path
-import tempfile
+
 from dotenv import load_dotenv
+
+
+load_dotenv()
 
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -12,14 +15,16 @@ from langchain_classic.retrievers import EnsembleRetriever
 from langchain_community.retrievers import BM25Retriever
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_community.document_loaders import PyPDFLoader
+# from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_pinecone import PineconeVectorStore
-from langsmith import expect
+
 from pinecone import Pinecone
 from src.logging_config import logger
 from src.error_logging import RAGException, RetrievalException, LLMException, ValidationException
 from src.config import config_inv, config_valid, config_error_msg
+from src.validation import QueryValidation, FileValidation
+from src.pdf_processor import PDFProcessor
 
 # logger = logging_setup()
 # logger.info('Initializing QGen AI pipeline...')
@@ -80,19 +85,19 @@ st.markdown("""
     </a>
 """, unsafe_allow_html=True)
 
-load_dotenv()
+
 
 
 if not config_valid:
-    st.error('**System Boot Failure**')
+    st.error(f'**System Boot Failure**: {config_error_msg}')
     st.info('Check env file for cloud and working credentials.')
     st.stop()
 
-else:
-    # openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
-    # pinecone_api_key = os.getenv("PINECONE_API_KEY") or st.secrets.get("PINECONE_API_KEY")
-    openai_api_key = config_inv.openai_api_key
-    pinecone_api_key = config_inv.pinecone_api_key
+# else:
+# openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+# pinecone_api_key = os.getenv("PINECONE_API_KEY") or st.secrets.get("PINECONE_API_KEY")
+openai_api_key = config_inv.openai_api_key
+pinecone_api_key = config_inv.pinecone_api_key
 
 
 
@@ -104,10 +109,10 @@ def load_core_retrievers():
     BM25_PATH = ROOT / 'bm25_index.pkl.gz'
 
     # load vectors in pinecone
-    embeddings = OpenAIEmbeddings(model='text-embedding-3-large', api_key=openai_api_key)
+    embeddings = OpenAIEmbeddings(model=config_inv.embedding_model, api_key=openai_api_key)
 
     vector_store = PineconeVectorStore(
-        index_name="qgen-ai-index",
+        index_name=config_inv.pinecone_index,
         embedding=embeddings,
         pinecone_api_key=pinecone_api_key
     )
@@ -123,90 +128,22 @@ def load_core_retrievers():
     return vector_store, bm25_retriever
 
 
-@st.cache_data(show_spinner=False)
-def process_new_pdfs(file_bytes, file_name):
-    tmp_file_path = None
-    try:
-        # hf containers have a read-only root system, making /tmp the only open sandbox
-        os.makedirs("/tmp", exist_ok=True)
-        try:
-            with tempfile.NamedTemporaryFile(dir="/tmp", delete=False, suffix='.pdf') as tmp_file:
-                tmp_file.write(file_bytes)
-                tmp_file_path = tmp_file.name
-            logger.info(f'Processing uploaded file: {file_name}')
-        except Exception as e:
-            raise ValidationException(
-                message=f'Encountered a problem while uploading PDF file into the QGenAI. File may be corrupted or encrypted.',
-                validation_field='uploaded_file',
-                metadata={'original_error': e}
-            )
-
-        try:
-            loader = PyPDFLoader(str(tmp_file_path))
-            pages = loader.load()
-        # catch parsing failure
-        except Exception as e:
-            raise ValidationException(
-                message=f'Problem parsing uploaded PDF file. File may be corrupted or encrypted.',
-                validation_field='uploaded_file',
-                metadata={'original_error': e}
-            )
-
-        # catch empty pdf
-        if not pages:
-            raise ValidationException(
-                message=f'There are no readable text to extract in the uploaded PDF file.',
-                validation_field='uploaded_file'
-
-            )
-
-        cover_page = pages[0].page_content[:3000] if pages else ''
-
-        get_llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, api_key=openai_api_key)
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", (
-                "You are an expert digital archivist for an agricultural genomics library.\n"
-                "Analyze the provided text from the cover page of a scientific paper. "
-                "Extract the primary authors, the year of publication, and the scientific journal.\n\n"
-                "CRITICAL OUTPUT FORMATTING:\n"
-                "- If there are more than two authors, format exactly as: Lastname et al., Year (Journal)\n"
-                "- If there are exactly two authors, format exactly as: Author1 & Author2, Year (Journal)\n"
-                "- If there is only one author, format exactly as: Lastname, Year (Journal)\n"
-                "- Keep the journal name abbreviated if standard, or use its full title (e.g., Crop Science, Genetics).\n"
-                "- Output ONLY the final citation string. Do not include introductory text, markdown quotes, formatting wrappers, or pleasantries."
-            )),
-            ("human", "Cover Page Text:\n{text}")
-        ])
-
-        chain_response = prompt | get_llm | StrOutputParser()
-        citation = chain_response.invoke({'text': cover_page})
-        clean_citation = citation.strip().replace('"', '').replace("'", "")
-        logger.info(f'Attempting to extract clean citation for {file_name}: {clean_citation}')
-
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=400)
-        chunks = text_splitter.split_documents(pages)
-        logger.info(f'Successfully generated chunks from the PDF file: {file_name}')
-
-        for chunk in chunks:
-            chunk.metadata['source'] = clean_citation
-            chunk.metadata['page'] = chunk.metadata.get('page', 0) + 1
-
-        return chunks
-    # for any other error
-    except RAGException as e:
-        st.sidebar.error(f'Unexpected file system error: {e.message}')
-    except Exception as e:
-        st.sidebar.error(f'An unexpected error occurred with the file system: {e}')
-    finally:
-        # clean up the temp operating system file immediately
-        if os.path.exists(tmp_file_path):
-            os.remove(tmp_file_path)
-
+get_llm = ChatOpenAI(
+        model=config_inv.llm_model,
+        temperature=config_inv.temperature,
+        api_key=openai_api_key
+    )
 
 # initialize backend engine components
 try:
     core_vector_ret, core_bm25_retriever = load_core_retrievers()
-    get_llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, api_key=openai_api_key)
+
+    # get_llm = ChatOpenAI(
+    #     model=config_inv.llm_model,
+    #     temperature=config_inv.temperature,
+    #     api_key=openai_api_key
+    # )
+
     database_connected = True
 except Exception as e:
     logger.critical(f'Database down or issue with database api key: {str(e)}')
@@ -225,8 +162,8 @@ if 'active_query' not in st.session_state:
     st.session_state.active_query = ""
 
 
-@st.cache_data(ttl=60)  # cache for 1 minute so API not spammed on every click
-def get_live_database_metrics(api_key, index_name="qgen-ai-index"):
+@st.cache_data(ttl=30)  # cache for 1 minute so API not spammed on every click
+def get_live_database_metrics(api_key, index_name=config_inv.pinecone_index):
     try:
         try:
             pc = Pinecone(api_key=api_key)
@@ -273,7 +210,7 @@ def get_live_database_metrics(api_key, index_name="qgen-ai-index"):
     except RAGException as e:
         st.error(f'Pipeline Error: {e.message}')
     except Exception as e:
-        st.error(f'An unexpected error has occured: {str(e)}')
+        st.error(f'An unexpected error has occurred: {str(e)}')
 
 
 # get count
@@ -356,22 +293,43 @@ with st.sidebar:
              '\nIt will be deleted once the session is closed.'
     )
 
-    temp_chunks = []
+    # temp_chunks = []
     if uploaded_file is not None:
         file_bytes = uploaded_file.getvalue()
         # call cached function for temp pdf
-        try:
-            temp_chunks = process_new_pdfs(file_bytes, uploaded_file.name)
-            if temp_chunks:
-                st.success(f"Loaded: `{temp_chunks[0].metadata['source']}` ({len(temp_chunks)} chunks)")
-            else:
-                st.error('Problem extracting text from uploaded PDF.')
-        except ValidationException as e:
-            st.error(f'❌Problem with uploaded document: {e.message}.')
-            temp_chunks = []
-        except Exception as e:
-            st.error(f'❌Problem with uploaded document: {e}.')
-            temp_chunks = []
+
+        is_valid_type, type_err = FileValidation.validate_file_is_pdf(uploaded_file.name)
+        is_valid_size, size_err = FileValidation.validate_file_size(len(file_bytes))
+
+        if not is_valid_type:
+            st.sidebar.error(f"❌ {type_err}")
+        elif not is_valid_size:
+            st.sidebar.error(f"❌ {size_err}")
+        else:
+            # val gates passed
+            try:
+                # print('here')
+                processor = PDFProcessor(
+                    chunk_size=config_inv.chunk_size,
+                    chunk_overlap=config_inv.chunk_overlap,
+                    llm_client=get_llm
+                )
+                # print('here now')
+                temp_chunks = processor.process_pdf(file_bytes, uploaded_file.name)
+                # print(temp_chunks[0])
+                # temp_chunks = PDFProcessor.process_pdf(file_bytes, uploaded_file.name, config_inv.llm_model)
+                if temp_chunks:
+                    # print('here 2')
+                    st.success(f"Loaded: `{temp_chunks[0].metadata['source']}` ({len(temp_chunks)} chunks)")
+                else:
+                    st.error('Problem extracting text from uploaded PDF.')
+                    # print('here 3')
+            except ValidationException as e:
+                st.error(f'❌Problem with uploaded document: {e.message}.')
+                temp_chunks = []
+            except Exception as e:
+                st.error(f'❌Unexpected problem with uploaded document: {e}.')
+                temp_chunks = []
 
     st.markdown('---')
     st.subheader('Query History')
@@ -416,11 +374,17 @@ with st.form(key="search_query_form", clear_on_submit=False):
         key='fresh_query_input'
     )
 
-    submit_pipeline = st.form_submit_button(label="Execute Pipeline", type="primary")
+    submit_pipeline = st.form_submit_button(label='Execute Pipeline', type='primary')
 
 if submit_pipeline and user_query:
+
+    is_valid_query, query_error = QueryValidation.validate_query(user_query)
+
+    if not is_valid_query:
+        st.error(f'**Query Validation Failure**: {query_error}')
+
     # error if db is down but allow for paper-only use
-    if not database_connected and scope != 'Uploaded Paper Only':
+    elif not database_connected and scope != 'Uploaded Paper Only':
         st.error('**Pipeline blocked**: Cannot query from core database while pinecone is offline.')
     else:
         st.session_state.active_query = user_query
@@ -457,7 +421,12 @@ if submit_pipeline and user_query:
                             message='**Missing OpenAI API Key**:Cannot generate vector embeddings..',
                             validation_field='openai_api_key'
                         )
-                    embeddings = OpenAIEmbeddings(model='text-embedding-3-large', api_key=openai_api_key)
+
+                    embeddings = OpenAIEmbeddings(
+                        model=config_inv.embedding_model,
+                        api_key=openai_api_key
+                    )
+
                     temp_db = Chroma.from_documents(temp_chunks, embeddings)
                     temp_vector_retriever = temp_db.as_retriever(search_kwargs={'k': k_depth})
                     temp_bm25_retriever = BM25Retriever.from_documents(temp_chunks)
@@ -495,7 +464,11 @@ if submit_pipeline and user_query:
                     core_bm25_retriever.k = k_depth
 
                     # uploaded paper
-                    embeddings = OpenAIEmbeddings(model='text-embedding-3-large', api_key=openai_api_key)
+                    embeddings = OpenAIEmbeddings(
+                        model=config_inv.embedding_model,
+                        api_key=openai_api_key
+                    )
+
                     temp_db = Chroma.from_documents(temp_chunks, embeddings)
                     temp_vector_retriever = temp_db.as_retriever(search_kwargs={'k': k_depth})
                     temp_bm25_retriever = BM25Retriever.from_documents(temp_chunks)
@@ -525,12 +498,27 @@ if submit_pipeline and user_query:
 
                 try:
                     # assemble grounding matrix
-                    context_string = "\n\n".join([
-                        f"--- START SOURCE CHUNK ({chunk.metadata.get('source', 'Unknown')}, Page {chunk.metadata.get('page', 'Unknown')}) ---\n"
-                        f"{chunk.page_content}\n"
-                        f"--- END SOURCE CHUNK ---"
-                        for chunk in retrieved_chunks
-                    ])
+                    # context_string = "\n\n".join([
+                    #     f"--- START SOURCE CHUNK ({chunk.metadata.get('source', 'Unknown')}, Page {chunk.metadata.get('page', 'Unknown')}) ---\n"
+                    #     f"{chunk.page_content}\n"
+                    #     f"--- END SOURCE CHUNK ---"
+                    #     for chunk in retrieved_chunks
+                    # ])
+
+                    context_chunks = []
+                    for chunk in retrieved_chunks:
+                        raw_p = chunk.metadata.get('page', 0)
+                        try:
+                            page_num = int(float(raw_p)) if raw_p else "Unknown"
+                        except (ValueError, TypeError):
+                            page_num = "Unknown"
+
+                        context_chunks.append(
+                            f"--- START SOURCE CHUNK ({chunk.metadata.get('source', 'Unknown')}, Page {page_num}) ---\n"
+                            f"{chunk.page_content}\n"
+                            f"--- END SOURCE CHUNK ---"
+                        )
+                    context_string = "\n\n".join(context_chunks)
 
                     #  grounding prompt template
                     prompt = ChatPromptTemplate.from_messages([
@@ -633,7 +621,13 @@ if st.session_state.active_response:
 
         for idx, chunk in enumerate(st.session_state.active_sources):
             citation_title = chunk.metadata.get('source', 'Unknown Reference')
-            page_num = chunk.metadata.get('page', 'Unknown')
+
+            raw_page = chunk.metadata.get('page', 0)
+            try:
+                page_num = int(float(raw_page)) if raw_page else "Unknown"
+            except (ValueError, TypeError):
+                page_num = "Unknown"
+                # page_num = chunk.metadata.get('page', 'Unknown')
 
             with st.expander(f'📍 [{idx + 1}] {citation_title} — Page {page_num}', expanded=False):
                 st.markdown(f'*{chunk.page_content}*')
